@@ -1,7 +1,7 @@
 # glassllm: design
 
 **Data:** 2026-10-10
-**Status:** aguardando revisão
+**Status:** aprovado (10/10/2026); seção 5 e item 4.5 ajustados após o treino de teste
 
 ## 1. Objetivo
 
@@ -50,6 +50,7 @@ glassllm/
 ├── pyproject.toml
 ├── src/glassllm/
 │   ├── __init__.py          API pública: Model, Tokenizer, Tracer, load_pretrained
+│   ├── config.py            Config do modelo
 │   ├── tokenizer.py
 │   ├── autograd.py
 │   ├── nn.py                camadas: Embedding, RMSNorm, RoPE, Attention, SwiGLU, Block
@@ -146,7 +147,8 @@ Cerca de 0,9 milhão de parâmetros.
 - AdamW escrito em NumPy, recorte de gradiente por norma, taxa de aprendizado com warmup e
   decaimento cosseno.
 - `scripts/train_model.py` treina o modelo de cada idioma com a própria lib e salva os pesos
-  em fp16 (`.npz`). Semente fixa.
+  em fp16 (`.npz`). Semente fixa, 3000 passos, e no fim o modelo volta aos pesos do ponto com a
+  menor perda de validação (`keep_best`).
 - Se o treino em NumPy for lento demais para ser prático (mais de 2 horas por modelo), o
   problema é levado ao autor antes de qualquer troca de abordagem.
 
@@ -160,10 +162,19 @@ Cerca de 0,9 milhão de parâmetros.
 
 ## 5. Dados
 
-- PT: *Dom Casmurro*, Machado de Assis (Projeto Gutenberg, domínio público).
-- EN: *Alice's Adventures in Wonderland*, Lewis Carroll (Projeto Gutenberg, domínio público).
-- `scripts/prepare_corpus.py` baixa, remove cabeçalho e rodapé do Gutenberg, normaliza e salva
-  em `data/`. 95% treino, 5% validação.
+Livros de domínio público do Projeto Gutenberg, vários por idioma:
+
+- PT (Machado de Assis): *Dom Casmurro* (55752), *Memórias Póstumas de Brás Cubas* (54829),
+  *Quincas Borba* (55682), *Esaú e Jacó* (56737), *Memorial de Aires* (55797). Cerca de 1,9 MB.
+- EN (Lewis Carroll): *Alice's Adventures in Wonderland* (11), *Through the Looking-Glass* (12),
+  *Sylvie and Bruno* (620). Cerca de 0,7 MB.
+
+`scripts/prepare_corpus.py` baixa, remove cabeçalho e rodapé do Gutenberg, normaliza e salva em
+`data/` (fora do git). Os últimos 5% de cada livro vão para a validação.
+
+**Por que vários livros:** num teste com um livro por idioma, o modelo decorou o texto. A perda
+de validação foi mínima no passo 600 (PT, 4,27) e no passo 200 (EN, 4,35) e depois subiu até
+5,65 e 7,77, enquanto a de treino caía para 1,09 e 0,11.
 
 ## 6. O site (`site/`)
 

@@ -190,7 +190,7 @@ O glassllm se apoia nas ideias destes trabalhos:
 - [micrograd](https://github.com/karpathy/micrograd) e [nanoGPT](https://github.com/karpathy/nanoGPT), de Andrej Karpathy, por mostrarem quanto cabe num código pequeno e legível.
 
 Os textos de treino são livros em domínio público do [Projeto Gutenberg](https://www.gutenberg.org/):
-*Dom Casmurro*, de Machado de Assis, e *Alice's Adventures in Wonderland*, de Lewis Carroll.
+romances de Machado de Assis (português) e de Lewis Carroll (inglês).
 
 ## Licença
 
