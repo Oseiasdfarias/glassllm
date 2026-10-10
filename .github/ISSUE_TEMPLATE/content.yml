@@ -1,0 +1,28 @@
+name: Explanation or translation / Explicação ou tradução
+description: A derivation is wrong or unclear, or the two languages disagree. / Uma dedução está errada ou confusa, ou os dois idiomas não batem.
+labels: ["content"]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: Chapter or file / Capítulo ou arquivo
+      placeholder: "Chapter 5 (RoPE), docs/equacoes.md section 3"
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind / Tipo
+      options:
+        - Wrong math / Matemática errada
+        - Unclear explanation / Explicação confusa
+        - Translation mismatch / Tradução diferente
+        - Missing intuition / Falta uma intuição
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Details and suggestion / Detalhes e sugestão
+    validations:
+      required: true

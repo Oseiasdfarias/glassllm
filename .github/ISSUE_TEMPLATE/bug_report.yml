@@ -1,0 +1,33 @@
+name: Bug report / Relato de bug
+description: Something computes the wrong value, crashes or does not install. / Algo calcula errado, quebra ou não instala.
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where / Onde
+      options:
+        - Library / Lib (Python)
+        - CLI
+        - Site
+        - Docs / Documentação
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened / O que aconteceu
+      description: What you ran, what you expected and what you got. / O que você rodou, o que esperava e o que aconteceu.
+      placeholder: |
+        glassllm trace --lang en "Alice was" --step attn.softmax
+        Expected: each row sums to 1
+        Got: ...
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment / Ambiente
+      description: glassllm version, Python version and OS, or browser for the site. / Versão do glassllm, do Python e sistema, ou navegador no caso do site.
+    validations:
+      required: true

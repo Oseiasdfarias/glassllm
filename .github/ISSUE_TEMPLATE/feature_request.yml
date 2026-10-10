@@ -1,0 +1,17 @@
+name: Idea / Ideia
+description: A new step to visualize, a chapter, a CLI command or an improvement. / Um passo novo para visualizar, um capítulo, um comando ou uma melhoria.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What would it help someone learn? / O que isso ajudaria alguém a aprender?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal / Proposta
+      description: Sketches and screenshots are welcome. / Esboços e prints são bem-vindos.
+    validations:
+      required: true
