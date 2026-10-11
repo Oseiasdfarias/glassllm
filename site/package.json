@@ -1,0 +1,25 @@
+{
+  "name": "glassllm-site",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "prepare:wheel": "node scripts/prepare-wheel.mjs",
+    "clean": "node scripts/clean.mjs",
+    "dev": "npm run prepare:wheel && astro dev",
+    "check": "npm run prepare:wheel && astro check",
+    "build": "npm run clean && npm run prepare:wheel && astro build",
+    "preview": "astro preview",
+    "capture:docs": "node scripts/capture-docs.mjs",
+    "check:docs": "node scripts/check-docs.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/source-code-pro": "5.3.1",
+    "@fontsource-variable/source-sans-3": "5.3.1",
+    "astro": "7.3.8"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.4",
+    "typescript": "5.8.3"
+  }
+}

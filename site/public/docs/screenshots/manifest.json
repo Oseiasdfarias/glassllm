@@ -1,0 +1,992 @@
+{
+  "capturedAt": "2026-10-11T16:25:11.989Z",
+  "baseURL": "http://127.0.0.1:4322/glassllm/",
+  "captures": [
+    {
+      "lang": "pt",
+      "file": "state-loading.png",
+      "selector": ".model-state",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 492,
+      "height": 160,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1065,
+        "y": 623.96875,
+        "width": 246,
+        "height": 80.390625,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "0 tokens",
+      "operation": "embed",
+      "head": null,
+      "status": "Preparando o modelo no navegador…",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "state-paused.png",
+      "selector": ".model-state",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 492,
+      "height": 162,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1065,
+        "y": 623.96875,
+        "width": 246,
+        "height": 81.390625,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "embed",
+      "head": null,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "state-ready.png",
+      "selector": ".model-state",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 492,
+      "height": 160,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1065,
+        "y": 623.96875,
+        "width": 246,
+        "height": 80.390625,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "0",
+      "operation": "embed",
+      "head": null,
+      "status": "Modelo pronto · roda localmente",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "lab.png",
+      "selector": ".lab-workspace",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 2604,
+      "height": 1962,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 217,
+        "width": 1302,
+        "height": 981.53125,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "embed",
+      "head": null,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "editor.png",
+      "selector": ".lab-text",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 1980,
+      "height": 938,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 217,
+        "width": 990,
+        "height": 469.765625,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "embed",
+      "head": null,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "settings.png",
+      "selector": ".lab-options",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 584,
+      "height": 1184,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1042,
+        "y": 217,
+        "width": 292,
+        "height": 592.140625,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "embed",
+      "head": null,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "attention.png",
+      "selector": ".lab-inspector",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 1980,
+      "height": 624,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 885.953125,
+        "width": 990,
+        "height": 312.578125,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "embed",
+      "head": null,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "architecture.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 2604,
+      "height": 2288,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 1226.53125,
+        "width": 1302,
+        "height": 1144.46875,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "embed",
+      "head": null,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "architecture-block.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 2604,
+      "height": 2288,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 1226.53125,
+        "width": 1302,
+        "height": 1144.46875,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "0:norm.attn",
+      "head": null,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "slow-motion.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 2604,
+      "height": 2540,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 1226.53125,
+        "width": 1302,
+        "height": 1270.65625,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "0:attn.q",
+      "head": 0,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "inspector-attention.png",
+      "selector": ".network-inspector",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 1200,
+      "height": 1550,
+      "expandedScrollableContent": true,
+      "clip": {
+        "x": 709,
+        "y": 1652.5,
+        "width": 600,
+        "height": 775.734375,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "0:attn.softmax",
+      "head": 0,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "inspector-mask.png",
+      "selector": ".network-inspector",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 1200,
+      "height": 1560,
+      "expandedScrollableContent": true,
+      "clip": {
+        "x": 709,
+        "y": 1652.5,
+        "width": 600,
+        "height": 780.734375,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "0:attn.mask",
+      "head": 0,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "mobile-390.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 2,
+        "mobile": true
+      },
+      "width": 700,
+      "height": 4440,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 20,
+        "y": 2034.078125,
+        "width": 350,
+        "height": 2220.25,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "0:norm.attn",
+      "head": null,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "mobile-320.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 320,
+        "height": 844,
+        "deviceScaleFactor": 2,
+        "mobile": true
+      },
+      "width": 560,
+      "height": 4800,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 20,
+        "y": 2359.046875,
+        "width": 280,
+        "height": 2400.109375,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "0:norm.attn",
+      "head": null,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "fullscreen.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 2732,
+      "height": 2000,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 0,
+        "y": 348,
+        "width": 1366,
+        "height": 1000,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token gerado",
+      "operation": "0:norm.attn",
+      "head": null,
+      "status": "Geração pausada",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "state-limit.png",
+      "selector": ".model-state",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 492,
+      "height": 160,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1065,
+        "y": 1606.96875,
+        "width": 246,
+        "height": 80.390625,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "128 tokens gerados",
+      "operation": "0:norm.attn",
+      "head": null,
+      "status": "Limite desta rodada alcançado",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "pt",
+      "file": "state-error.png",
+      "selector": ".model-state",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 492,
+      "height": 258,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1065,
+        "y": 644.96875,
+        "width": 246,
+        "height": 129.78125,
+        "scale": 1
+      },
+      "prompt": "Capitu olhou para",
+      "sampling": "sample",
+      "temperature": 0.8,
+      "generated": "0 tokens",
+      "operation": "embed",
+      "head": null,
+      "status": "Não foi possível carregar o modelo: zipfile.BadZipFile: File is not a zip file",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "state-loading.png",
+      "selector": ".model-state",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 492,
+      "height": 160,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1065,
+        "y": 623.96875,
+        "width": 246,
+        "height": 80.390625,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "0 tokens",
+      "operation": "embed",
+      "head": null,
+      "status": "Preparing the model in your browser…",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "state-paused.png",
+      "selector": ".model-state",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 492,
+      "height": 162,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1065,
+        "y": 623.96875,
+        "width": 246,
+        "height": 81.390625,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "embed",
+      "head": null,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "state-ready.png",
+      "selector": ".model-state",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 492,
+      "height": 160,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1065,
+        "y": 623.96875,
+        "width": 246,
+        "height": 80.390625,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "0",
+      "operation": "embed",
+      "head": null,
+      "status": "Model ready · running locally",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "lab.png",
+      "selector": ".lab-workspace",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 2604,
+      "height": 1958,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 217,
+        "width": 1302,
+        "height": 979.53125,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "embed",
+      "head": null,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "editor.png",
+      "selector": ".lab-text",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 1980,
+      "height": 938,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 217,
+        "width": 990,
+        "height": 469.765625,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "embed",
+      "head": null,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "settings.png",
+      "selector": ".lab-options",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 584,
+      "height": 1184,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1042,
+        "y": 217,
+        "width": 292,
+        "height": 592.140625,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "embed",
+      "head": null,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "attention.png",
+      "selector": ".lab-inspector",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 1980,
+      "height": 620,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 885.953125,
+        "width": 990,
+        "height": 310.578125,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "embed",
+      "head": null,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "architecture.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 2604,
+      "height": 2288,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 1224.53125,
+        "width": 1302,
+        "height": 1144.46875,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "embed",
+      "head": null,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "architecture-block.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 2604,
+      "height": 2288,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 1224.53125,
+        "width": 1302,
+        "height": 1144.46875,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "0:norm.attn",
+      "head": null,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "slow-motion.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 2604,
+      "height": 2540,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 32,
+        "y": 1224.53125,
+        "width": 1302,
+        "height": 1270.65625,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "0:attn.q",
+      "head": 0,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "inspector-attention.png",
+      "selector": ".network-inspector",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 1200,
+      "height": 1490,
+      "expandedScrollableContent": true,
+      "clip": {
+        "x": 709,
+        "y": 1650.5,
+        "width": 600,
+        "height": 745.734375,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "0:attn.softmax",
+      "head": 0,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "inspector-mask.png",
+      "selector": ".network-inspector",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 1200,
+      "height": 1448,
+      "expandedScrollableContent": true,
+      "clip": {
+        "x": 709,
+        "y": 1650.5,
+        "width": 600,
+        "height": 724.546875,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "0:attn.mask",
+      "head": 0,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "mobile-390.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "deviceScaleFactor": 2,
+        "mobile": true
+      },
+      "width": 700,
+      "height": 4378,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 20,
+        "y": 1985.6875,
+        "width": 350,
+        "height": 2189.75,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "0:norm.attn",
+      "head": null,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "mobile-320.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 320,
+        "height": 844,
+        "deviceScaleFactor": 2,
+        "mobile": true
+      },
+      "width": 560,
+      "height": 4740,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 20,
+        "y": 2351.640625,
+        "width": 280,
+        "height": 2370.109375,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "0:norm.attn",
+      "head": null,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "fullscreen.png",
+      "selector": "#architecture",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 2732,
+      "height": 2000,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 0,
+        "y": 346,
+        "width": 1366,
+        "height": 1000,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "1 token generated",
+      "operation": "0:norm.attn",
+      "head": null,
+      "status": "Generation paused",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "state-limit.png",
+      "selector": ".model-state",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 492,
+      "height": 162,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1065,
+        "y": 1616.96875,
+        "width": 246,
+        "height": 81.390625,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "greedy",
+      "temperature": 0.8,
+      "generated": "128 tokens generated",
+      "operation": "0:norm.attn",
+      "head": null,
+      "status": "This run reached its token limit",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    },
+    {
+      "lang": "en",
+      "file": "state-error.png",
+      "selector": ".model-state",
+      "viewport": {
+        "width": 1366,
+        "height": 1000,
+        "deviceScaleFactor": 2,
+        "mobile": false
+      },
+      "width": 492,
+      "height": 258,
+      "expandedScrollableContent": false,
+      "clip": {
+        "x": 1065,
+        "y": 644.96875,
+        "width": 246,
+        "height": 129.78125,
+        "scale": 1
+      },
+      "prompt": "Alice was beginning to",
+      "sampling": "sample",
+      "temperature": 0.8,
+      "generated": "0 tokens",
+      "operation": "embed",
+      "head": null,
+      "status": "Could not load the model: zipfile.BadZipFile: File is not a zip file",
+      "font": "\"Source Sans 3 Variable\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Helvetica, Arial, sans-serif"
+    }
+  ]
+}

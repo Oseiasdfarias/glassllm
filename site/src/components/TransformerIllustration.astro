@@ -1,0 +1,35 @@
+---
+interface Props { lang: "pt" | "en" }
+const { lang } = Astro.props;
+const pt = lang === "pt";
+const chips = pt ? ["texto", "em", "tokens"] : ["text", "as", "tokens"];
+---
+<figure class="transformer-illustration">
+  <svg viewBox="0 0 560 455" role="img" aria-labelledby="transformer-illustration-title transformer-illustration-desc">
+    <title id="transformer-illustration-title">{pt ? "O caminho de uma previsão no Transformer" : "A prediction's path through the Transformer"}</title>
+    <desc id="transformer-illustration-desc">{pt ? "Tokens entram como vetores. Quatro blocos combinam atenção e SwiGLU. A saída fornece a distribuição do próximo token. O desenho é esquemático." : "Tokens enter as vectors. Four blocks combine attention and SwiGLU. The output supplies the next-token distribution. This is a schematic drawing."}</desc>
+    <defs>
+      <marker id="docs-illustration-arrow" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="m0 0 7 3.5-7 3.5" fill="var(--graph-edge)" /></marker>
+    </defs>
+    <rect width="560" height="455" rx="8" fill="var(--surface)" />
+    <text x="26" y="30" class="illustration-eyebrow">{pt ? "UMA PREVISÃO, POR DENTRO" : "INSIDE ONE PREDICTION"}</text>
+    {chips.map((chip, i) => <g><rect x={26 + i * 92} y="49" width="80" height="36" rx="7" class="illustration-token" /><text x={66 + i * 92} y="72" text-anchor="middle" class="illustration-text">{chip}</text></g>)}
+    <path class="illustration-flow" d="M306 67h54v38" marker-end="url(#docs-illustration-arrow)" />
+    <text x="331" y="54" class="illustration-small">E[ids]</text>
+    {[0,1,2,3].map((row) => [0,1,2,3,4,5].map((col) => <rect x={26 + col * 21} y={123 + row * 21} width="15" height="15" rx="3" fill="var(--accent)" opacity={.35 + ((row * 3 + col) % 6) * .11} />))}
+    <text x="26" y="224" class="illustration-small">{pt ? "vetores · 128 dimensões" : "vectors · 128 dimensions"}</text>
+    <path class="illustration-flow" d="M173 161h45" marker-end="url(#docs-illustration-arrow)" />
+    {[3,2,1,0].map((i) => <g transform={`translate(${i * 9},${-i * 9})`}><rect x="229" y="114" width="265" height="151" rx="8" fill={i === 0 ? "var(--surface-raised)" : "var(--surface)"} stroke="var(--border)" />{i === 0 && <><text x="248" y="142" class="illustration-text">{pt ? "Bloco Transformer × 4" : "Transformer block × 4"}</text><path d="M249 165h222" stroke="var(--border)" /><rect x="249" y="181" width="61" height="34" rx="6" fill="var(--surface)" stroke="var(--accent)" /><rect x="323" y="181" width="61" height="34" rx="6" fill="var(--surface)" stroke="var(--graph-edge)" /><rect x="397" y="181" width="61" height="34" rx="6" fill="var(--surface)" stroke="var(--graph-edge)" /><text x="279" y="203" text-anchor="middle" class="illustration-text">Q</text><text x="353" y="203" text-anchor="middle" class="illustration-text">K</text><text x="427" y="203" text-anchor="middle" class="illustration-text">V</text><text x="249" y="244" class="illustration-small">{pt ? "atenção → resíduos → SwiGLU" : "attention → residuals → SwiGLU"}</text></>}</g>)}
+    <path class="illustration-flow" d="M362 267v36H204" marker-end="url(#docs-illustration-arrow)" />
+    <rect x="26" y="282" width="167" height="61" rx="8" fill="var(--surface-raised)" stroke="var(--border)" />
+    <text x="42" y="307" class="illustration-text">RMSNorm → Eᵀ</text><text x="42" y="329" class="illustration-small">{pt ? "1024 logits" : "1024 logits"}</text>
+    <path class="illustration-flow" d="M109 344v24h90" marker-end="url(#docs-illustration-arrow)" />
+    <rect x="211" y="327" width="116" height="85" rx="8" fill="var(--code-background)" stroke="var(--border)" />
+    {[44,66,26,15,9].map((h,i)=><rect x={227+i*17} y={396-h} width="10" height={h} rx="2" fill={i===1 ? "var(--accent)" : "var(--graph-edge)"} />)}
+    <text x="225" y="430" class="illustration-small">softmax(z / T)</text>
+    <path class="illustration-flow" d="M330 367h41" marker-end="url(#docs-illustration-arrow)" />
+    <rect x="381" y="345" width="143" height="44" rx="8" fill="var(--surface-raised)" stroke="var(--accent)" /><text x="452" y="372" text-anchor="middle" class="illustration-text">{pt ? "próximo token" : "next token"}</text>
+    <path d="M524 367h16V67H480" fill="none" stroke="var(--graph-edge)" stroke-dasharray="4 5" /><text x="382" y="425" class="illustration-small">{pt ? "volta ao contexto" : "back into context"}</text>
+  </svg>
+  <figcaption>{pt ? "Fluxo esquemático do modelo. Os valores reais aparecem no laboratório." : "Schematic model flow. Explore actual values in the lab."}</figcaption>
+</figure>

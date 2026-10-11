@@ -1,0 +1,9 @@
+---
+import inventory from "../data/api-inventory.json";
+import Icon from "./Icon.astro";
+interface Props { lang: "pt" | "en" }
+const { lang } = Astro.props;
+const pt = lang === "pt";
+const count = inventory.modules.reduce((total,module)=>total+module.symbols.length,0);
+---
+<section class="docs-section"><h2>{pt ? "Assinaturas no código" : "Signatures in the code"}</h2><p class="docs-section-intro">{pt ? `${inventory.rootExports.length} exports pela raiz; ${count} declarações de classes/funções em ${inventory.modules.length} módulos. Abra um módulo para consultar métodos, operadores e propriedades.` : `${inventory.rootExports.length} root exports; ${count} class/function declarations in ${inventory.modules.length} modules. Open a module to inspect methods, operators and properties.`}</p>{inventory.modules.map(module=><details class="docs-api-module"><summary><Icon name="chevron-right" class="icon disclosure-icon" /><code>{module.module}</code><span>{module.symbols.length}</span></summary><p class="docs-source-label">{module.file}</p><ul>{module.symbols.map(symbol=><li><code>{symbol.signature}</code>{"members" in symbol && symbol.members && <ul>{symbol.members.map(member=><li><code>{member.signature}</code></li>)}</ul>}</li>)}</ul></details>)}</section>

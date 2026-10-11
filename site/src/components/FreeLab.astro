@@ -1,0 +1,134 @@
+---
+import Architecture from "./Architecture.astro";
+import Icon from "./Icon.astro";
+interface Props { lang: "pt" | "en" }
+const { lang } = Astro.props;
+const pt = lang === "pt";
+const base = import.meta.env.BASE_URL;
+---
+
+<section class="lab" id="laboratorio" aria-labelledby="lab-title" data-lang={lang}>
+  <header class="lab-header" id="top">
+    <div class="header-inner">
+      <a class="wordmark" href={base + lang + "/"}>glass<span>llm</span><span class="brand-divider" aria-hidden="true"></span><span class="workspace-label">{pt ? "Laboratório" : "Lab"}</span></a>
+      <div class="header-links">
+        <a class="docs-link" href={base + lang + "/docs/"}>{pt ? "Documentação" : "Documentation"}</a>
+        <a class="about-link" href="#about-model">{pt ? "Como funciona" : "How it works"}</a>
+        <nav class="language-switch" aria-label={pt ? "Idioma" : "Language"}>
+          <a href={base + "pt/"} lang="pt" hreflang="pt" aria-current={pt ? "page" : undefined}>PT</a>
+          <a href={base + "en/"} lang="en" hreflang="en" aria-current={!pt ? "page" : undefined}>EN</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="lab-shell">
+    <div class="lab-intro">
+      <div>
+        <p class="eyebrow">{pt ? "Explore o modelo por dentro" : "Explore the model from within"}</p>
+        <h1 id="lab-title">{pt ? "Modo livre" : "Free mode"}</h1>
+        <p class="lab-description">{pt ? "Escreva um começo. Acompanhe as escolhas, um token de cada vez." : "Write a beginning. Follow each choice, one token at a time."}</p>
+      </div>
+      <a class="model-badge" href="#settings"><span aria-hidden="true"></span>{pt ? "Modelo PT" : "EN model"}<span class="badge-separator">·</span><span class="badge-location">{pt ? "No navegador" : "In your browser"}</span></a>
+    </div>
+
+    <div class="lab-workspace">
+      <section class="lab-text panel" aria-labelledby="input-title">
+        <div class="panel-heading">
+          <h2 id="input-title">{pt ? "Comece com uma frase" : "Start with a sentence"}</h2>
+          <span class="panel-tag">{pt ? "Entrada" : "Input"}</span>
+        </div>
+        <label class="field-label" for="prompt">{pt ? "Texto inicial" : "Starting text"}</label>
+        <textarea id="prompt" data-prompt rows="2" maxlength="600" aria-describedby="prompt-help">{pt ? "Capitu olhou para" : "Alice was beginning to"}</textarea>
+        <div class="prompt-toolbar">
+          <div class="controls">
+            <button class="button button-primary" data-action="play" type="button"><Icon name="play" />{pt ? "Gerar" : "Generate"}</button>
+            <button class="button" data-action="step" type="button"><Icon name="step" />{pt ? "Um passo" : "Step once"}</button>
+            <button class="button" data-action="pause" type="button" disabled><Icon name="pause" />{pt ? "Pausar" : "Pause"}</button>
+          </div>
+          <button class="button button-quiet" data-action="clear" type="button"><Icon name="trash" />{pt ? "Limpar" : "Reset"}</button>
+        </div>
+        <p id="prompt-help" class="prompt-help">{pt ? "Use “Um passo” para observar uma única previsão." : "Use “Step once” to inspect a single prediction."}</p>
+
+        <div class="output-section">
+          <div class="output-heading"><h3>{pt ? "Texto em geração" : "Generated text"}</h3><span data-token-count>0 tokens</span></div>
+          <div class="generated" data-output data-placeholder={pt ? "A continuação da sua frase aparece aqui." : "Your prompt’s continuation will appear here."} aria-live="polite" aria-label={pt ? "Texto gerado" : "Generated text"}></div>
+        </div>
+        <details class="tokenized" open>
+          <summary><Icon name="chevron-right" class="icon disclosure-icon" /><span>Tokens BPE</span><small>{pt ? "cada caixa mostra o token e seu ID" : "each box shows its token and ID"}</small></summary>
+          <div data-tokenized><p class="empty-state">{pt ? "Inicie a geração para ver como sua frase é dividida." : "Start generation to see how your prompt is split."}</p></div>
+        </details>
+      </section>
+
+      <section class="flow-panel panel" aria-labelledby="flow-title">
+        <div class="panel-heading"><h2 id="flow-title">{pt ? "Percurso do token" : "The token’s path"}</h2><a class="network-shortcut" href="#architecture">{pt ? "Ver rede completa" : "Explore the network"}<Icon name="arrow-up-right" /></a></div>
+        <div class="pipeline" aria-label={pt ? "Etapas do modelo" : "Model stages"}>
+          <div class="pipeline-stage" data-stage="tokens"><span class="stage-number">01</span><b>Tokens</b><code>IDs (n,)</code></div><span class="flow-arrow" aria-hidden="true"><Icon name="arrow-right" /></span>
+          <div class="pipeline-stage" data-stage="embedding"><span class="stage-number">02</span><b>Embedding</b><code>E[ids] → (n, 128)</code></div><span class="flow-arrow" aria-hidden="true"><Icon name="arrow-right" /></span>
+          <div class="transformer-group">
+            <div class="transformer-heading"><span class="stage-number">03</span><b>{pt ? "Blocos" : "Blocks"}</b><code>{pt ? "atenção + FFN" : "attention + FFN"}</code></div>
+            <div class="transformer-layers">{[0, 1, 2, 3].map((layer) => <div class="pipeline-stage transformer-stage" data-stage={"block-" + layer} title={(pt ? "Bloco " : "Block ") + (layer + 1)}><b>{layer + 1}</b><span class="sr-only">{pt ? "Bloco" : "Block"} {layer + 1}</span></div>)}</div>
+          </div><span class="flow-arrow" aria-hidden="true"><Icon name="arrow-right" /></span>
+          <div class="pipeline-stage" data-stage="logits"><span class="stage-number">04</span><b>Logits</b><code>(V,)</code></div><span class="flow-arrow" aria-hidden="true"><Icon name="arrow-right" /></span>
+          <div class="pipeline-stage" data-stage="sample"><span class="stage-number">05</span><b>{pt ? "Sorteio" : "Sampling"}</b><code>softmax / T</code></div>
+        </div>
+      </section>
+
+      <div class="lab-inspector">
+        <section class="inspector-section panel" aria-labelledby="attention-title">
+          <div class="panel-heading"><h2 id="attention-title">{pt ? "Atenção" : "Attention"}</h2><span class="panel-tag">{pt ? "Contexto" : "Context"}</span></div>
+          <p class="inspector-description">{pt ? "Para onde o último token olhou." : "Where the last token looked."}</p>
+          <p class="inspector-caption">{pt ? "camada 4 · cabeça 0" : "layer 4 · head 0"}</p>
+          <div class="attention-list" data-attention><p class="empty-state">{pt ? "Após o primeiro passo, veja o peso de cada token do contexto." : "After the first step, inspect each context token’s weight."}</p></div>
+        </section>
+        <section class="inspector-section panel" aria-labelledby="probability-title">
+          <div class="panel-heading"><h2 id="probability-title">{pt ? "Próximas possibilidades" : "Next possibilities"}</h2><span class="panel-tag">Top 6</span></div>
+          <p class="inspector-description">{pt ? "Os candidatos para continuar a frase." : "Candidates for continuing your prompt."}</p>
+          <p class="inspector-caption">softmax(logits / T)</p>
+          <div class="probability-list" data-probabilities><p class="empty-state">{pt ? "Gere um token para comparar as seis maiores probabilidades." : "Generate a token to compare the six highest probabilities."}</p></div>
+        </section>
+      </div>
+
+      <aside class="lab-options panel" id="settings" aria-labelledby="controls-title">
+        <div class="panel-heading"><h2 id="controls-title">{pt ? "Ajustes da geração" : "Generation settings"}</h2><Icon name="settings" class="icon settings-icon" /></div>
+        <div class="settings-body">
+          <div class="setting-temperature">
+            <label class="temperature-label" for="temperature"><span>{pt ? "Temperatura" : "Temperature"}</span><output data-temp-label for="temperature">0.8</output></label>
+            <input id="temperature" data-temperature type="range" min="0.2" max="1.4" step="0.1" value="0.8" />
+            <div class="range-labels"><span>{pt ? "Mais previsível" : "More predictable"}</span><span>{pt ? "Mais variado" : "More varied"}</span></div>
+          </div>
+          <fieldset class="option-group">
+            <legend>{pt ? "Escolha do token" : "Token selection"}</legend>
+            <div class="segmented">
+              <label><input type="radio" name="sampling" value="sample" checked /><span>{pt ? "Sortear" : "Sample"}</span></label>
+              <label><input type="radio" name="sampling" value="greedy" /><span>{pt ? "Mais provável" : "Most likely"}</span></label>
+            </div>
+          </fieldset>
+          <fieldset class="option-group">
+            <legend>{pt ? "Intervalo entre tokens" : "Time between tokens"}</legend>
+            <div class="segmented">
+              <label><input type="radio" name="speed" value="650" /><span>{pt ? "Lenta" : "Slow"}</span></label>
+              <label><input type="radio" name="speed" value="300" checked /><span>Normal</span></label>
+              <label><input type="radio" name="speed" value="90" /><span>{pt ? "Rápida" : "Fast"}</span></label>
+            </div>
+          </fieldset>
+          <p class="settings-hint">{pt ? "Temperatura e escolha se aplicam ao iniciar uma nova geração." : "Temperature and selection apply when starting a new run."}</p>
+          <div class="model-state">
+            <div class="token-line"><span>{pt ? "Último token" : "Latest token"}</span><code data-latest-token>—</code></div>
+            <div class="runtime-badge" role="status"><span class="status-dot" data-status-dot></span><span data-status>{pt ? "Modelo ainda não carregado" : "Model not loaded yet"}</span></div>
+            <details class="runtime-error-details" data-error-details hidden>
+              <summary><Icon name="info" />{pt ? "Detalhes técnicos" : "Technical details"}</summary>
+              <pre data-error-detail></pre>
+            </details>
+          </div>
+          <p class="privacy-note"><Icon name="lock" /><span>{pt ? "O primeiro uso baixa o modelo. Depois, as contas rodam no seu navegador e seu texto fica aqui." : "The first run downloads the model. Computation then runs in your browser and your text stays here."}</span></p>
+        </div>
+      </aside>
+    </div>
+    <Architecture lang={lang} />
+    <noscript><p class="noscript-note">{pt ? "Ative JavaScript para usar o laboratório." : "Enable JavaScript to use the lab."}</p></noscript>
+  </div>
+  <script>
+    import "../scripts/free-lab.ts";
+  </script>
+</section>

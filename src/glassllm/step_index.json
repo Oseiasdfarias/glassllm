@@ -1,0 +1,102 @@
+{
+  "attn.k": {
+    "file": "glassllm/nn.py",
+    "line": 99
+  },
+  "attn.mask": {
+    "file": "glassllm/nn.py",
+    "line": 124
+  },
+  "attn.mix": {
+    "file": "glassllm/nn.py",
+    "line": 128
+  },
+  "attn.out": {
+    "file": "glassllm/nn.py",
+    "line": 132
+  },
+  "attn.q": {
+    "file": "glassllm/nn.py",
+    "line": 98
+  },
+  "attn.rope_k": {
+    "file": "glassllm/nn.py",
+    "line": 107
+  },
+  "attn.rope_q": {
+    "file": "glassllm/nn.py",
+    "line": 106
+  },
+  "attn.scores": {
+    "file": "glassllm/nn.py",
+    "line": 121
+  },
+  "attn.softmax": {
+    "file": "glassllm/nn.py",
+    "line": 126
+  },
+  "attn.v": {
+    "file": "glassllm/nn.py",
+    "line": 100
+  },
+  "embed": {
+    "file": "glassllm/model.py",
+    "line": 56
+  },
+  "ffn.act": {
+    "file": "glassllm/nn.py",
+    "line": 149
+  },
+  "ffn.down": {
+    "file": "glassllm/nn.py",
+    "line": 150
+  },
+  "ffn.gate": {
+    "file": "glassllm/nn.py",
+    "line": 147
+  },
+  "ffn.up": {
+    "file": "glassllm/nn.py",
+    "line": 148
+  },
+  "logits": {
+    "file": "glassllm/model.py",
+    "line": 62
+  },
+  "loss": {
+    "file": "glassllm/model.py",
+    "line": 73
+  },
+  "loss.grad": {
+    "file": "glassllm/autograd.py",
+    "line": 383
+  },
+  "norm.attn": {
+    "file": "glassllm/nn.py",
+    "line": 168
+  },
+  "norm.ffn": {
+    "file": "glassllm/nn.py",
+    "line": 172
+  },
+  "norm.final": {
+    "file": "glassllm/model.py",
+    "line": 60
+  },
+  "probs": {
+    "file": "glassllm/model.py",
+    "line": 28
+  },
+  "resid.attn": {
+    "file": "glassllm/nn.py",
+    "line": 170
+  },
+  "resid.ffn": {
+    "file": "glassllm/nn.py",
+    "line": 174
+  },
+  "sample": {
+    "file": "glassllm/model.py",
+    "line": 106
+  }
+}

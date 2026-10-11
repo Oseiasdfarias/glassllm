@@ -1,0 +1,11 @@
+---
+import { papers, bibliography, paperBibtex } from "../lib/docs-references";
+import { docPages } from "../lib/docs-plan";
+import Icon from "./Icon.astro";
+interface Props { lang: "pt" | "en"; ids: string[]; complete?: boolean }
+const { lang, ids, complete = false } = Astro.props;
+const pt = lang === "pt";
+const base = import.meta.env.BASE_URL + lang + "/docs/";
+const selected = papers.filter(paper => ids.includes(paper.id));
+---
+{selected.length > 0 && <section class="docs-section"><h2>{pt ? "Artigos relacionados" : "Related papers"}</h2><p class="docs-section-intro">{pt ? "Fontes primárias dos conceitos usados no projeto. O ano identifica a primeira versão do preprint arXiv; a nota de publicação informa o evento ou periódico quando registrado na fonte." : "Primary sources for concepts used in the project. The year identifies the first arXiv preprint version; the publication note names the venue or journal when recorded by the source."}</p>{complete && <a class="docs-inline-link" href={import.meta.env.BASE_URL+"docs/glassllm-references.bib"} download>{pt ? "Baixar bibliografia BibTeX" : "Download BibTeX bibliography"}<Icon name="arrow-right" /></a>}<div class="docs-papers">{selected.map(paper=><article id={paper.id}><span>{paper.preprintYear} · {complete ? "arXiv:"+paper.url.split("/").at(-1) : paper.authors}</span><h3><a href={paper.url} target="_blank" rel="noreferrer">{paper.title}<Icon name="external-link" /></a></h3>{complete && <p class="docs-paper-authors">{bibliography[paper.id].authors.join("; ")}</p>}<p>{paper.topic[lang]}</p>{complete && bibliography[paper.id].publication && <p class="docs-paper-publication">{pt ? "Publicação: " : "Publication: "}{bibliography[paper.id].publication}</p>}{complete && <><div class="docs-paper-pages">{docPages.filter(page=>page.slug!=="projeto/referencias" && page.references.includes(paper.id)).map(page=><a href={base+page.slug+"/"}>{page.title[lang]}</a>)}</div><details class="docs-bibtex"><summary>BibTeX</summary><pre><code>{paperBibtex(paper)}</code></pre></details></>}</article>)}</div></section>}

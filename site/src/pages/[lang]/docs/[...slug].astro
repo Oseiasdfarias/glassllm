@@ -1,0 +1,46 @@
+---
+import DocumentationLayout from "../../../layouts/DocumentationLayout.astro";
+import DocumentationHome from "../../../components/DocumentationHome.astro";
+import DocumentationScreenshots from "../../../components/DocumentationScreenshots.astro";
+import DocumentationInventory from "../../../components/DocumentationInventory.astro";
+import DocumentationPapers from "../../../components/DocumentationPapers.astro";
+import { docGroups, docPages, type DocPage } from "../../../lib/docs-plan";
+import { getDocument } from "../../../lib/docs-content";
+import type { Lang } from "../../../i18n";
+import Icon from "../../../components/Icon.astro";
+
+export function getStaticPaths() {
+  return (["pt", "en"] as const).flatMap(lang => [
+    { params: { lang, slug: undefined }, props: { page: null } },
+    ...docPages.map(page => ({ params: { lang, slug: page.slug }, props: { page } })),
+  ]);
+}
+interface Props { page: DocPage | null }
+const { page } = Astro.props;
+const lang = Astro.params.lang as Lang;
+const pt = lang === "pt";
+const base = import.meta.env.BASE_URL + lang + "/docs/";
+const document = page ? getDocument(lang, page.slug) : null;
+const Content = document?.Content;
+const title = document?.frontmatter.title ?? (pt ? "Documentação do glassllm" : "glassllm documentation");
+const description = document?.frontmatter.description ?? (pt ? "Explore a interface, entenda os cálculos do Transformer e programe com o motor NumPy." : "Explore the interface, understand Transformer calculations and program with the NumPy engine.");
+const headings = document ? document.getHeadings().filter(heading => heading.depth === 2) : [];
+const readingTime = document ? Math.max(1, Math.ceil(document.rawContent().split(/\s+/).length / 210)) : 0;
+const currentGroup = docGroups.find(group => group.id === page?.group);
+const index = page ? docPages.findIndex(item => item.slug === page.slug) : -1;
+const previous = index > 0 ? docPages[index - 1] : null;
+const next = index >= 0 && index < docPages.length - 1 ? docPages[index + 1] : null;
+---
+<DocumentationLayout lang={lang} title={title} description={description} slug={page?.slug}>
+  {!page ? <DocumentationHome lang={lang} /> : <>
+    <div class="docs-breadcrumb"><a href={base}>{pt ? "Documentação" : "Documentation"}</a><Icon name="chevron-right" /><span>{currentGroup?.title[lang]}</span></div>
+    <header class="docs-title"><p class="eyebrow">{currentGroup?.title[lang]}</p><h1>{title}</h1><p>{description}</p><div class="docs-page-meta"><span>glassllm 0.1.0</span><span><Icon name="clock" />{readingTime} {pt ? "min de leitura · estimativa" : "min read · estimate"}</span></div></header>
+    {headings.length > 0 && <nav class="docs-toc" aria-label={pt ? "Nesta página" : "On this page"}><strong>{pt ? "Nesta página" : "On this page"}</strong><ol>{headings.map(heading => <li><a href={"#" + heading.slug}>{heading.text}</a></li>)}</ol></nav>}
+    {Content && <article class="docs-prose" data-doc-content><Content /></article>}
+    {page.slug === "biblioteca/api-publica" && <DocumentationInventory lang={lang} />}
+    <DocumentationScreenshots lang={lang} ids={page.screenshots} />
+    {page.sources.length > 0 && <section class="docs-section"><h2>{pt ? "Fontes no projeto" : "Project sources"}</h2><div class="docs-source-files">{page.sources.map(source => <code>{source}</code>)}</div></section>}
+    <DocumentationPapers lang={lang} ids={page.references} complete={page.slug === "projeto/referencias"} />
+    <nav class="docs-pagination" aria-label={pt ? "Sequência da documentação" : "Documentation sequence"}>{previous ? <a href={base + previous.slug + "/"}><small><Icon name="arrow-left" />{pt ? "Anterior" : "Previous"}</small><span>{previous.title[lang]}</span></a> : <span />}{next && <a href={base + next.slug + "/"}><small>{pt ? "Próxima" : "Next"}<Icon name="arrow-right" /></small><span>{next.title[lang]}</span></a>}</nav>
+  </>}
+</DocumentationLayout>

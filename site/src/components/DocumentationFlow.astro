@@ -1,0 +1,51 @@
+---
+import Icon from "./Icon.astro";
+import type { IconName } from "../lib/icons";
+interface Props { lang: "pt" | "en" }
+const { lang } = Astro.props;
+const pt = lang === "pt";
+const base = import.meta.env.BASE_URL + lang + "/docs/";
+const flows: { id: string; title: string; loop: string; steps: { icon: IconName; title: string; detail: string; math: string; href: string }[] }[] = [
+  { id: "inference", title: pt ? "Prever um token" : "Predict a token", loop: pt ? "O token escolhido entra no contexto e inicia a próxima previsão." : "The selected token joins the context and starts the next prediction.", steps: [
+    { icon: "code", title: pt ? "Separar o texto" : "Split the text", detail: pt ? "BPE transforma caracteres e subpalavras em IDs." : "BPE turns characters and subwords into IDs.", math: pt ? "texto → ids" : "text → ids", href: "fundamentos/tokens-bpe" },
+    { icon: "layers", title: pt ? "Consultar vetores" : "Look up vectors", detail: pt ? "Cada ID seleciona uma linha da matriz de embedding." : "Each ID selects an embedding matrix row.", math: "X = E[ids]", href: "fundamentos/embeddings" },
+    { icon: "network", title: pt ? "Relacionar o contexto" : "Connect the context", detail: pt ? "4 blocos combinam atenção causal, resíduos e SwiGLU." : "4 blocks combine causal attention, residuals and SwiGLU.", math: "Q, K, V · RoPE · GQA", href: "interface/arquitetura" },
+    { icon: "code", title: pt ? "Projetar a saída" : "Project the output", detail: pt ? "Normalizar e comparar a saída com o vocabulário." : "Normalize and compare output with the vocabulary.", math: "z = RMSNorm(X) · Eᵀ", href: "fundamentos/saida-geracao" },
+    { icon: "settings", title: pt ? "Calcular probabilidades" : "Compute probabilities", detail: pt ? "A temperatura controla a distribuição de escolha." : "Temperature controls the selection distribution.", math: "p = softmax(z / T)", href: "interface/ajustes" },
+    { icon: "play", title: pt ? "Escolher o token" : "Choose the token", detail: pt ? "Sortear com p ou escolher o mais provável." : "Sample with p or select the most likely token.", math: "sample(p) / argmax(p)", href: "interface/geracao-tokens" },
+  ]},
+  { id: "training", title: pt ? "Aprender com o texto" : "Learn from text", loop: pt ? "Os pesos atualizados são usados em novas janelas do corpus. O treino acontece pela biblioteca Python." : "Updated weights are used on new corpus windows. Training runs through the Python library.", steps: [
+    { icon: "book", title: pt ? "Preparar janelas" : "Prepare windows", detail: pt ? "O alvo é o próximo token de cada posição." : "The target is the next token at each position.", math: "x = ids[t:t+n] · y = ids[t+1:t+n+1]", href: "biblioteca/treino-otimizacao" },
+    { icon: "network", title: pt ? "Executar forward" : "Run forward", detail: pt ? "O modelo produz logits para todas as posições." : "The model produces logits for all positions.", math: "logits: B × n × V", href: "biblioteca/glasslm" },
+    { icon: "code", title: pt ? "Medir a perda" : "Measure the loss", detail: pt ? "Entropia cruzada penaliza a probabilidade baixa do alvo." : "Cross-entropy penalizes low target probability.", math: "L = −mean(log p[target])", href: "fundamentos/perda-gradientes" },
+    { icon: "arrow-left", title: pt ? "Propagar gradientes" : "Backpropagate gradients", detail: pt ? "Autograd percorre o grafo em sentido reverso." : "Autograd traverses the graph in reverse.", math: "loss.backward()", href: "biblioteca/tensor-autograd" },
+    { icon: "settings", title: pt ? "Atualizar pesos" : "Update weights", detail: pt ? "Clipping, taxa de aprendizado e AdamW ajustam os parâmetros." : "Clipping, learning rate and AdamW adjust parameters.", math: "AdamW.step(lr)", href: "biblioteca/treino-otimizacao" },
+    { icon: "check", title: pt ? "Validar e salvar" : "Validate and save", detail: pt ? "Medir a perda de validação e guardar o checkpoint." : "Measure validation loss and save the checkpoint.", math: "evaluate() · model.save()", href: "projeto/dados-modelos" },
+  ]},
+];
+---
+<section class="docs-section docs-flow-section" aria-labelledby="docs-flow-heading">
+  <div class="docs-section-heading"><div><p class="eyebrow">{pt ? "SIGA O CAMINHO DOS DADOS" : "FOLLOW THE DATA"}</p><h2 id="docs-flow-heading">{pt ? "Um modelo, dois percursos" : "One model, two paths"}</h2></div><span class="docs-flow-badge"><Icon name="network" />{pt ? "Cada etapa abre sua explicação" : "Each step opens its explanation"}</span></div>
+  <div class="docs-flow-tabs" role="tablist" aria-label={pt ? "Percurso do modelo" : "Model path"}>{flows.map((flow, i) => <button type="button" role="tab" id={"tab-" + flow.id} aria-controls={"flow-" + flow.id} aria-selected={i === 0 ? "true" : "false"} tabindex={i === 0 ? 0 : -1} data-docs-flow-tab={flow.id}>{flow.title}</button>)}</div>
+  {flows.map((flow, i) => <div role="tabpanel" id={"flow-" + flow.id} aria-labelledby={"tab-" + flow.id} data-docs-flow-panel={flow.id} hidden={i !== 0}>
+    <ol class="docs-flow-nodes">{flow.steps.map((step, j) => <li><a href={base + step.href + "/"}><span class="docs-flow-node-top"><span>{String(j + 1).padStart(2, "0")}</span><Icon name={step.icon} /></span><h3>{step.title}</h3><p>{step.detail}</p><code>{step.math}</code><Icon name="arrow-right" class="icon docs-flow-connector" /></a></li>)}</ol>
+    <div class="docs-flow-loop"><Icon name="restart" /><p>{flow.loop}</p></div>
+  </div>)}
+</section>
+<script>
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>("[data-docs-flow-tab]")];
+  const panels = [...document.querySelectorAll<HTMLElement>("[data-docs-flow-panel]")];
+  function select(tab: HTMLButtonElement, focus = false) {
+    tabs.forEach((item) => { const active = item === tab; item.setAttribute("aria-selected", String(active)); item.tabIndex = active ? 0 : -1; });
+    panels.forEach((panel) => { panel.hidden = panel.dataset.docsFlowPanel !== tab.dataset.docsFlowTab; });
+    if (focus) tab.focus();
+  }
+  tabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => select(tab));
+    tab.addEventListener("keydown", (event) => {
+      const offset = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+      const next = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : (index + offset + tabs.length) % tabs.length;
+      if (offset || event.key === "Home" || event.key === "End") { event.preventDefault(); select(tabs[next], true); }
+    });
+  });
+</script>

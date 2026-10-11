@@ -15,6 +15,7 @@ htmlcov/
 node_modules/
 site/dist/
 site/.astro/
+site/src/generated/
 site/public/py/
 
 # Notebooks
@@ -24,3 +25,6 @@ site/public/py/
 .vscode/
 .idea/
 .DS_Store
+
+# Corpus (regenerate with scripts/prepare_corpus.py)
+data/

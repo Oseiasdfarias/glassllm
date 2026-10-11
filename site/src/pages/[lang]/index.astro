@@ -1,0 +1,26 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import FreeLab from '../../components/FreeLab.astro';
+import { copy, type Lang } from '../../i18n';
+
+export function getStaticPaths() {
+  return [{ params: { lang: 'pt' } }, { params: { lang: 'en' } }];
+}
+
+const lang = Astro.params.lang as Lang;
+const t = copy[lang];
+---
+
+<SiteLayout lang={lang} copy={t}>
+  <main id="main">
+    <FreeLab lang={lang} />
+    <details class="about-model" id="about-model">
+      <summary>{lang === 'pt' ? 'Como funciona o glassllm' : 'How glassllm works'}</summary>
+      <div class="about-content">
+        <p>{t.overview.body}</p>
+        <p>{t.method.body}</p>
+        <p class="phase-note">{t.method.note}</p>
+      </div>
+    </details>
+  </main>
+</SiteLayout>

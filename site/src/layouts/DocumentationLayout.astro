@@ -1,0 +1,44 @@
+---
+import SiteLayout from "./SiteLayout.astro";
+import DocumentationNav from "../components/DocumentationNav.astro";
+import Icon from "../components/Icon.astro";
+import { docPages } from "../lib/docs-plan";
+import { copy, type Lang } from "../i18n";
+import "../styles/docs.css";
+interface Props { lang: Lang; title: string; description: string; slug?: string }
+const { lang, title, description, slug = "" } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const path = "docs/" + (slug ? slug + "/" : "");
+const pt = lang === "pt";
+---
+<SiteLayout lang={lang} copy={copy[lang]} title={title + " · glassllm"} description={description} path={path}>
+  <header class="lab-header docs-header">
+    <div class="header-inner">
+      <a class="wordmark" href={base + lang + "/docs/"}>glass<span>llm</span><span class="brand-divider" aria-hidden="true"></span><span class="workspace-label">{pt ? "Documentação" : "Documentation"}</span></a>
+      <div class="header-links"><a class="docs-lab-link" href={base + lang + "/"}>{pt ? "Abrir laboratório" : "Open lab"}<Icon name="arrow-up-right" /></a>
+        <nav class="language-switch" aria-label={pt ? "Idioma" : "Language"}>
+          <a href={base + "pt/" + path} lang="pt" hreflang="pt" aria-current={pt ? "page" : undefined}>PT</a>
+          <a href={base + "en/" + path} lang="en" hreflang="en" aria-current={!pt ? "page" : undefined}>EN</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <div class="docs-shell">
+    <aside class="docs-sidebar">
+      <details class="docs-navigation" data-docs-navigation open>
+        <summary><Icon name="chevron-right" class="icon disclosure-icon" />{pt ? "Índice de páginas" : "Page index"}<span>{docPages.length}</span></summary>
+        <DocumentationNav lang={lang} current={slug || undefined} />
+      </details>
+    </aside>
+    <main class="docs-main" id="main">
+      <slot />
+    </main>
+  </div>
+  <script>
+    const navigation = document.querySelector<HTMLDetailsElement>("[data-docs-navigation]");
+    const desktop = window.matchMedia("(min-width: 960px)");
+    const sync = () => { if (navigation) navigation.open = desktop.matches; };
+    sync();
+    desktop.addEventListener("change", sync);
+  </script>
+</SiteLayout>

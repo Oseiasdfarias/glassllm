@@ -178,8 +178,12 @@ de validação foi mínima no passo 600 (PT, 4,27) e no passo 200 (EN, 4,35) e d
 
 ## 6. O site (`site/`)
 
-- **Astro**, saída estática, versão estável pinada no `package.json`. Node 22 LTS, instalado no
-  usuário via `fnm` (a máquina não tem Node hoje).
+- **Identidade visual:** preservar a paleta das demos originais em `docs/assets/preview-loop.png`
+  e `preview-chapter.png`: fundo azul-escuro, ações e valores em ciano, passo ativo em âmbar.
+  O layout evolui para uma área de trabalho com painel principal, ajustes na lateral e painéis
+  separados para atenção e probabilidades. A composição está em `docs/visual-identity.md`.
+- **Astro**, saída estática, versão pinada no `package.json` (Astro 7.3.8; Node 22.12+).
+  A pipeline do site usa Node 24.
 - **i18n nativo do Astro:** rotas `/pt/...` e `/en/...`, português como padrão. Textos de
   interface num dicionário por idioma.
 - **Capítulos** numa content collection, um MDX por capítulo e idioma. O frontmatter de cada
@@ -190,8 +194,8 @@ de validação foi mínima no passo 600 (PT, 4,27) e no passo 200 (EN, 4,35) e d
 - **Ilhas interativas** em TypeScript, sem framework de UI: painel de três colunas, heatmap,
   barras de probabilidade, painel livre.
 - **Pyodide** roda num Web Worker, para a interface não travar. Na build, o wheel do
-  `glassllm` (gerado na mesma pipeline) é copiado para `site/public/py/`, e o worker instala
-  com `micropip`. Versão do Pyodide pinada.
+  `glassllm` (gerado na mesma pipeline) entra como asset Vite do site, e o worker instala com
+  `micropip`. Versão do Pyodide pinada.
 - O worker expõe mensagens simples: `load(lang)`, `tokenize(text)`, `trace(text)`,
   `generate_step()`, `train_steps(n)`. Os arrays voltam como listas, só dos passos pedidos.
 
@@ -225,6 +229,30 @@ velocidade. O destaque percorre Tokens → Embedding → Blocos → Logits → S
 atenção do último token e o top 6 de probabilidades. O token escolhido entra no texto e o
 ciclo recomeça. Clicar num bloco pausa e abre aquele passo no layout A.
 
+### 6.4 Arquitetura completa de geração (implementada)
+
+Seção SVG abaixo do painel livre, com os quatro blocos abertos: RMSNorm, Q/K/V, RoPE,
+cache K/V, expansão GQA, scores, máscara, softmax, mistura de valores, projeção, duas
+conexões residuais e SwiGLU. A saída mostra norma final, E compartilhado, logits,
+temperatura, probabilidades e retorno do ID gerado diretamente ao contexto.
+
+O worker entrega resumos dos 77 registros da última previsão; o tensor selecionado é
+consultado separadamente, com cabeça, dimensões, estatísticas, recorte numérico de até
+8 × 8 e arquivo/linha/código do índice da biblioteca. −∞ é preservado na máscara como
+texto JSON e excluído das estatísticas de valores finitos. Cache e GQA são estruturas
+simbólicas sem snapshot próprio. A animação reproduz a ordem registrada após o cálculo.
+Seleção de operação e reprodução manual pausam a geração. O mapa permite zoom, navegação
+por bloco, movimentação e tela cheia. Os capítulos e o treino visual continuam na Fase 3.
+
+O modo **Slow motion** reserva de 1 a 8 segundos de leitura por cálculo, com padrão de
+3 segundos, após carregar o tensor selecionado. Atualiza automaticamente a explicação,
+equação, valores, destaque no resumo e enquadramento do nó no mapa completo. A navegação
+automática pode ser desativada. Permite pausar, continuar sem reiniciar, voltar e avançar
+um cálculo sem circular ao início. A pausa cancela a espera visual mesmo com uma inspeção
+pendente; respostas antigas não substituem a operação atual. Retomar a geração conclui
+o fluxo da previsão atual antes de calcular outro token. O modo desacelera a reprodução
+dos registros, preservando a execução da biblioteca no worker.
+
 ## 7. Publicação
 
 - **Repositório:** público no GitHub (`Oseiasdfarias/glassllm`), criado com aprovação do autor.
@@ -248,14 +276,15 @@ ciclo recomeça. Clicar num bloco pausa e abre aquele passo no layout A.
   rodar o modelo com tracer.
 - **Pesos empacotados:** `load_pretrained` funciona a partir do wheel instalado, e a perda
   de validação com os pesos em fp16 fica a no máximo 0,01 da registrada ao fim do treino.
-- **Site:** `astro check` na build; conferência manual no navegador ao fim de cada fase.
+- **Site:** `astro check` e build estática local; conferência manual no navegador antes do deploy.
 
 ## 9. Fases
 
 1. **Lib + docs:** tokenizer, autograd, modelo, trace, treino, CLI, pesos PT e EN, testes. Ao
    final, dá para estudar pelo terminal e o pacote está pronto para o PyPI.
 2. **Site + painel livre:** Astro, i18n, Pyodide no worker, painel de geração em loop com o
-   modelo real, deploy no GitHub Pages.
+   modelo real. Implementados e validados localmente; o workflow de deploy está pronto para a
+   publicação da branch `main`.
 3. **Capítulos:** do 0 ao 10, um por vez, PT e EN.
 
 Cada fase tem o seu plano de implementação.

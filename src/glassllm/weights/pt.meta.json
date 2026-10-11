@@ -1,0 +1,11 @@
+{
+  "steps": 3000,
+  "val_loss_fp32": 3.4348712393968897,
+  "val_loss": 3.434872064703547,
+  "train_tokens": 694356,
+  "val_tokens": 38009,
+  "eval_batch_size": 16,
+  "eval_seq_len": 128,
+  "eval_n_batches": 10,
+  "eval_seed": 1234
+}

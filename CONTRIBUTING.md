@@ -36,8 +36,6 @@ If you plan a large change, open an issue first so we can agree on the approach.
 
 ## Development setup
 
-> The library is being built (phase 1). These commands will work once `pyproject.toml` lands.
-
 ```bash
 git clone https://github.com/Oseiasdfarias/glassllm.git
 cd glassllm
@@ -58,6 +56,7 @@ npm run dev
 
 - `develop` is the integration branch. **Open pull requests against `develop`.**
 - `main` holds released versions only. Maintainers merge `develop` into `main` when cutting a release.
+- PyPI releases use Trusted Publishing. See [RELEASING.md](RELEASING.md) for the one-time setup and tag format.
 - Name branches by intent: `feat/rope-chapter`, `fix/softmax-overflow`, `docs/attention-pt`.
 - Use [Conventional Commits](https://www.conventionalcommits.org/) for messages:
   `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`.
@@ -107,9 +106,6 @@ Se a mudança for grande, abra uma issue antes para combinarmos a abordagem.
    técnico explicado na primeira vez que aparece.
 
 ## Ambiente de desenvolvimento
-
-> A lib está sendo construída (fase 1). Estes comandos passam a funcionar quando o
-> `pyproject.toml` entrar.
 
 ```bash
 git clone https://github.com/Oseiasdfarias/glassllm.git

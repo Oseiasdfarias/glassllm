@@ -1,0 +1,96 @@
+---
+import { createNetworkGraph, DEFAULT_CONFIG } from "../lib/network-graph";
+import { renderNetwork } from "../lib/network-render";
+import Icon from "./Icon.astro";
+interface Props { lang: "pt" | "en" }
+const { lang } = Astro.props;
+const pt = lang === "pt";
+const graph = createNetworkGraph(DEFAULT_CONFIG, lang);
+---
+
+<section class="architecture panel" id="architecture" data-network aria-labelledby="architecture-title">
+  <div class="architecture-heading">
+    <div>
+      <p class="eyebrow">{pt ? "Do texto ao próximo token" : "From text to the next token"}</p>
+      <h2 id="architecture-title">{pt ? "A rede inteira, por dentro" : "Inside the complete network"}</h2>
+      <p data-network-config>{pt ? "4 blocos · 128 dimensões · 4 cabeças Q / 2 K/V · contexto de 128 tokens" : "4 blocks · 128 dimensions · 4 Q / 2 K/V heads · 128-token context"}</p>
+    </div>
+    <span class="panel-tag">{pt ? "Arquitetura de geração" : "Generation architecture"}</span>
+  </div>
+  <div class="network-toolbar">
+    <div class="network-playback">
+      <button class="button" type="button" data-network-action="replay" disabled><Icon name="restart" />{pt ? "Reproduzir fluxo" : "Replay flow"}</button>
+      <button class="button" type="button" data-network-action="resume" disabled><Icon name="play" />{pt ? "Continuar" : "Continue"}</button>
+      <button class="button" type="button" data-network-action="previous" disabled><Icon name="arrow-left" />{pt ? "Cálculo anterior" : "Previous calculation"}</button>
+      <button class="button" type="button" data-network-action="next" disabled><Icon name="arrow-right" />{pt ? "Próximo cálculo" : "Next calculation"}</button>
+      <button class="button button-quiet" type="button" data-network-action="stop" disabled><Icon name="pause" />{pt ? "Pausar fluxo" : "Pause flow"}</button>
+    </div>
+    <div class="network-zoom" aria-label={pt ? "Ampliação do desenho" : "Diagram zoom"}>
+      <button class="button" type="button" data-network-action="zoom-out" aria-label={pt ? "Diminuir" : "Zoom out"}><Icon name="minus" /></button>
+      <output data-network-zoom>100%</output>
+      <button class="button" type="button" data-network-action="zoom-in" aria-label={pt ? "Ampliar" : "Zoom in"}><Icon name="plus" /></button>
+      <button class="button" type="button" data-network-action="fit"><Icon name="fit" />{pt ? "Ver tudo" : "Fit all"}</button>
+      <button class="button" type="button" data-network-action="fullscreen"><Icon name="maximize" /><span data-network-fullscreen-label>{pt ? "Tela cheia" : "Full screen"}</span></button>
+    </div>
+  </div>
+  <div class="network-study-controls">
+    <label class="network-slow-toggle"><input type="checkbox" data-network-slow /><span>Slow motion</span></label>
+    <label class="network-delay-label">{pt ? "Tempo por cálculo" : "Time per calculation"}
+      <select data-network-delay disabled>
+        <option value="1000">1 s</option>
+        <option value="2000">2 s</option>
+        <option value="3000" selected>3 s</option>
+        <option value="5000">5 s</option>
+        <option value="8000">8 s</option>
+      </select>
+    </label>
+    <label class="network-follow-toggle"><input type="checkbox" data-network-follow checked /><span>{pt ? "Acompanhar etapa" : "Follow current step"}</span></label>
+    <p>{pt ? "Ative antes de gerar ou reproduzir. Cada etapa mostra a explicação e os valores reais; pause para ler no seu ritmo." : "Enable before generating or replaying. Each step shows its explanation and actual values; pause to read at your own pace."}</p>
+  </div>
+  <div class="network-current-step" data-network-current hidden>
+    <span data-network-current-number></span>
+    <div><strong data-network-current-title></strong><p data-network-current-explanation></p><code data-network-current-equation></code></div>
+  </div>
+  <div class="network-workspace">
+    <div class="network-map">
+      <nav class="network-navigation" aria-label={pt ? "Navegar pela rede" : "Navigate the network"} data-network-navigation>
+        <button type="button" data-network-focus="input">{pt ? "Entrada" : "Input"}</button>
+        {[0, 1, 2, 3].map((layer) => <button type="button" data-network-focus={layer + ":norm.attn"}>{pt ? "Bloco" : "Block"} {layer + 1}</button>)}
+        <button type="button" data-network-focus="logits">{pt ? "Saída" : "Output"}</button>
+      </nav>
+      <div class="network-viewport" data-network-viewport tabindex="0" aria-label={pt ? "Desenho da rede. Use a ampliação e as barras de rolagem para explorar." : "Network diagram. Use zoom and scrollbars to explore."}>
+        <div class="network-canvas" data-network-canvas set:html={renderNetwork(graph, lang)} />
+      </div>
+      <div class="network-legend">
+        <span class="legend-flow">{pt ? "Cálculos" : "Calculations"}</span>
+        <span class="legend-residual">{pt ? "Residual" : "Residual"}</span>
+        <span class="legend-cache">Cache K/V</span>
+        <span class="legend-shared">{pt ? "Pesos E" : "E weights"}</span>
+        <span class="legend-active">{pt ? "Etapa atual" : "Current step"}</span>
+      </div>
+      <p class="network-hint">{pt ? "Selecione um bloco para ampliar. Arraste o fundo para mover o desenho e clique nas operações para inspecionar." : "Select a block to zoom in. Drag the background to pan and click operations to inspect them."}</p>
+    </div>
+    <aside class="network-inspector" aria-label={pt ? "Inspeção do cálculo" : "Calculation inspector"}>
+      <div class="network-inspector-heading"><span class="eyebrow">{pt ? "Operação selecionada" : "Selected operation"}</span><span data-network-layer class="panel-tag"></span></div>
+      <h3 data-network-title>Embedding</h3>
+      <p data-network-description></p>
+      <code class="network-equation" data-network-equation></code>
+      <div class="network-shape-line"><span>{pt ? "Dimensões" : "Dimensions"}</span><code data-network-shape></code></div>
+      <label class="network-head-selector" data-network-head-wrap hidden>{pt ? "Cabeça de atenção" : "Attention head"}<select data-network-head></select></label>
+      <p class="network-value-status" data-network-value-status role="status">{pt ? "Gere um token para ver os valores reais." : "Generate a token to see actual values."}</p>
+      <dl class="network-stats" data-network-stats hidden>
+        <div><dt>{pt ? "Mínimo" : "Minimum"}</dt><dd data-network-min></dd></div>
+        <div><dt>{pt ? "Média" : "Mean"}</dt><dd data-network-mean></dd></div>
+        <div><dt>{pt ? "Máximo" : "Maximum"}</dt><dd data-network-max></dd></div>
+      </dl>
+      <div class="network-matrix" data-network-matrix></div>
+      <p class="network-matrix-caption" data-network-matrix-caption></p>
+      <details class="network-source" data-network-source hidden open>
+        <summary><Icon name="chevron-right" class="icon disclosure-icon" />{pt ? "Cálculo no código" : "Calculation in the code"}</summary>
+        <p data-network-source-location></p>
+        <pre><code data-network-source-code></code></pre>
+      </details>
+    </aside>
+  </div>
+  <div class="network-caption"><span data-network-progress role="status">{pt ? "Mapa completo · aguardando a primeira previsão" : "Complete map · waiting for the first prediction"}</span><span>{pt ? "Slow motion desacelera a visualização dos cálculos reais registrados pelo modelo." : "Slow motion slows the visualization of actual calculations recorded by the model."}</span></div>
+</section>

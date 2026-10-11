@@ -1,0 +1,14 @@
+---
+import { docGroups, docPages } from "../lib/docs-plan";
+import Icon from "./Icon.astro";
+interface Props { lang: "pt" | "en"; current?: string }
+const { lang, current } = Astro.props;
+const base = import.meta.env.BASE_URL + lang + "/docs/";
+---
+<nav aria-label={lang === "pt" ? "Páginas da documentação" : "Documentation pages"}>
+  <a class="docs-index-link" href={base} aria-current={!current ? "page" : undefined}>{lang === "pt" ? "Início da documentação" : "Documentation home"}</a>
+  {docGroups.map((group) => <details class="docs-nav-group" open={current?.startsWith(group.id + "/") || (!current && group.id === "comecar")}>
+    <summary><Icon name="chevron-right" class="icon disclosure-icon" />{group.title[lang]}<span>{docPages.filter((page) => page.group === group.id).length}</span></summary>
+    <ul>{docPages.filter((page) => page.group === group.id).map((page) => <li><a href={base + page.slug + "/"} aria-current={current === page.slug ? "page" : undefined}>{page.title[lang]}</a></li>)}</ul>
+  </details>)}
+</nav>

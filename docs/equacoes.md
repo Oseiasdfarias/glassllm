@@ -3,9 +3,15 @@
 Este texto acompanha o código do `glassllm`. Ele segue o caminho de um token pelo modelo e,
 em cada passo, mostra a equação, de onde ela vem e por que ela tem aquela forma.
 
-Notação: $n$ é o número de tokens da entrada, $d$ o tamanho do vetor de cada token,
-$V$ o tamanho do vocabulário, $L$ o número de blocos, $H$ o número de cabeças de atenção
-e $d_k = d/H$ o tamanho de cada cabeça.
+Notação: $B$ é o tamanho do batch, $n$ o número de tokens novos da entrada,
+$m$ o número total de posições K/V, $d$ o tamanho do vetor de cada token,
+$V$ o tamanho do vocabulário, $L$ o número de blocos, $H$ o número de cabeças Q,
+$H_{kv}$ o número de cabeças K/V e $d_k = d/H$ o tamanho de cada cabeça.
+Sem cache, $m=n$; com cache, $m=\text{start}+n$.
+
+A configuração padrão do código NumPy é $V=1024$, $d=128$, $L=4$, $H=4$,
+$H_{kv}=2$, $d_k=32$, contexto máximo de 128 posições e largura FFN de 341.
+Usamos vetores linha, como nas multiplicações `x @ W` do código.
 
 O protótipo original, em PyTorch, está em [prototipo/mini_llm_torch.py](prototipo/mini_llm_torch.py).
 
@@ -17,12 +23,14 @@ Um LLM dá uma probabilidade para um texto. A regra da cadeia da probabilidade q
 em pedaços:
 
 $$
-P(x_1, \dots, x_n) = \prod_{t} P(x_{t+1} \mid x_1, \dots, x_t)
+P(x_1, \dots, x_n) = P(x_1)\prod_{t=1}^{n-1} P(x_{t+1} \mid x_1, \dots, x_t)
 $$
 
 Basta saber responder "dado o que veio antes, qual o próximo token?". O Transformer é uma
 função que recebe os tokens anteriores e devolve uma distribuição sobre o vocabulário.
 Tudo o que vem abaixo serve a essa função.
+Na geração da biblioteca, o prompt fornece o prefixo: o motor prevê sua continuação,
+sem inserir automaticamente um token BOS.
 
 ## 1. Embedding: transformar ID em vetor
 
@@ -37,7 +45,8 @@ x = e_i^\top E = \text{linha } i \text{ de } E
 $$
 
 O embedding é uma camada linear aplicada a um one-hot. Na prática se pega a linha $i$
-direto (lookup). As linhas começam aleatórias, e o gradiente aproxima tokens de uso parecido.
+direto (lookup). As linhas começam aleatórias e são ajustadas pelos gradientes do treinamento;
+coordenadas ou distâncias específicas não têm uma interpretação linguística garantida.
 
 ## 2. Atenção
 
@@ -56,15 +65,15 @@ $$
 \alpha_{ij} = \frac{e^{s_{ij}}}{\sum_k e^{s_{ik}}} \quad \text{(softmax)}
 $$
 
-Se todos os scores forem multiplicados por um número grande, o softmax tende a um one-hot no
-maior score. Por isso ele é um "argmax suave": escolhe o mais parecido, mas deixa o gradiente
-passar.
+Se todos os scores forem multiplicados por um número positivo cada vez maior, o softmax
+concentra massa no maior score. Com um máximo único, o limite é um one-hot; em empate,
+a massa divide-se entre os máximos. Por isso ele é um "argmax suave", diferenciável.
 
 **Q, K e V.** Usar $x_i \cdot x_j$ direto é simétrico (i gosta de j tanto quanto j gosta de i)
 e faz o mesmo vetor cumprir três papéis. Damos uma matriz aprendida para cada papel:
 
 $$
-q_i = W_Q x_i \;(\text{pergunta}), \qquad k_j = W_K x_j \;(\text{etiqueta}), \qquad v_j = W_V x_j \;(\text{conteúdo})
+q_i = x_i W_Q \;(\text{pergunta}), \qquad k_j = x_j W_K \;(\text{etiqueta}), \qquad v_j = x_j W_V \;(\text{conteúdo})
 $$
 
 É um dicionário suave: a pergunta combina um pouco com cada etiqueta, e o resultado é a mistura
@@ -84,14 +93,17 @@ q \cdot k = \sum_{l=1}^{d_k} q_l k_l, \qquad
 \;\Rightarrow\; \text{Var}(q \cdot k) = d_k
 $$
 
-Com $d_k = 128$, os scores ficam na casa de $\pm 11$. A derivada do softmax é
+No modelo padrão, $d_k = 32$ e esse desvio-padrão, sob as hipóteses acima, é
+$\sqrt{32}\approx 5{,}66$ antes da divisão. Não é uma medida dos scores aprendidos.
+A derivada do softmax é
 
 $$
 \frac{\partial p_i}{\partial s_j} = p_i(\delta_{ij} - p_j)
 $$
 
-e, quando $p$ é quase one-hot, ela é quase zero em todo lugar: o gradiente some. Dividir por
-$\sqrt{d_k}$ volta a variância para 1:
+e, quando $p$ é quase one-hot, as derivadas do softmax tornam-se pequenas.
+Isso pode dificultar a propagação de gradientes pela atenção; não significa que todo gradiente
+do modelo seja zero. Dividir por $\sqrt{d_k}$ volta a variância para 1 sob as hipóteses acima:
 
 $$
 \text{Attention}(Q, K, V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d_k}} + M\right) V
@@ -107,29 +119,37 @@ Como $e^{-\infty} = 0$, o futuro recebe peso zero. O ganho: numa única passada,
 prevê o token seguinte, ou seja, $n$ previsões em paralelo. Treinar é paralelo; gerar é
 sequencial.
 
+Com cache e índices começando em zero, a posição da consulta local $i$ é
+$\text{start}+i$: a máscara proíbe $j>\text{start}+i$, e tem dimensões $n\times m$.
+`causal_mask(n, m, start)` retorna `True` nos pontos proibidos; `masked_fill` insere $-\infty$.
+O softmax subtrai o máximo de cada linha antes de exponenciar, sem alterar as probabilidades.
+
 ## 3. Posição e RoPE
 
-Sem informação de posição, a atenção não distingue "cão morde homem" de "homem morde cão":
-os pesos dependem só do conteúdo.
+Sem uma representação explícita de posição, os produtos escalares Q/K dependem de seus
+conteúdos, sem uma distância posicional codificada diretamente. A máscara causal já fornece
+uma restrição de ordem; RoPE acrescenta posição às comparações Q/K.
 
-**O que queremos:** o score entre as posições $m$ e $n$ deve depender do conteúdo e só da
-distância $m - n$.
+**O que queremos:** para vetores Q/K fixos, a contribuição posicional ao score entre as
+posições $p$ e $q$ deve depender da distância $p-q$.
 
-**Dedução em 2D.** Trate o par $(q_1, q_2)$ como o complexo $z_q = q_1 + i q_2$. Em 2D,
-$a \cdot b = \text{Re}(a \bar b)$. Girando $q$ pelo ângulo $m\theta$ e $k$ por $n\theta$:
-
-$$
-f(q, m) \cdot f(k, n)
-= \text{Re}\!\left(z_q e^{im\theta}\, \bar z_k e^{-in\theta}\right)
-= \text{Re}\!\left(z_q \bar z_k\, e^{i(m-n)\theta}\right)
-$$
-
-Só sobrou $m - n$. Em números reais, isso é a matriz de rotação:
+**Dedução em 2D.** Trate um par de Q como o complexo $z_Q=Q_1+iQ_2$, e um par de K
+como $z_K=K_1+iK_2$. Em 2D, $a\cdot b=\text{Re}(a\bar b)$.
+Girando Q pelo ângulo $p\theta$ e K por $q\theta$:
 
 $$
-\begin{pmatrix} q'_1 \\ q'_2 \end{pmatrix} =
-\begin{pmatrix} \cos m\theta & -\sin m\theta \\ \sin m\theta & \cos m\theta \end{pmatrix}
-\begin{pmatrix} q_1 \\ q_2 \end{pmatrix}
+f(Q, p) \cdot f(K, q)
+= \text{Re}\!\left(z_Q e^{ip\theta}\, \bar z_K e^{-iq\theta}\right)
+= \text{Re}\!\left(z_Q \bar z_K\, e^{i(p-q)\theta}\right)
+$$
+
+Na parte posicional, só sobrou $p-q$. Em números reais, isso é a matriz de rotação
+de um par de coordenadas da consulta na posição $p$:
+
+$$
+\begin{pmatrix} Q'_1 \\ Q'_2 \end{pmatrix} =
+\begin{pmatrix} \cos p\theta & -\sin p\theta \\ \sin p\theta & \cos p\theta \end{pmatrix}
+\begin{pmatrix} Q_1 \\ Q_2 \end{pmatrix}
 $$
 
 **Em $d_k$ dimensões:** cada par $(2i, 2i+1)$ gira com a sua frequência
@@ -141,6 +161,11 @@ $$
 Como os ponteiros de um relógio: pares rápidos distinguem posições próximas, pares lentos
 distinguem posições distantes. O RoPE entra só em $Q$ e $K$, dentro de toda camada.
 
+As tabelas de seno e cosseno têm shape `(128, 16)` na configuração padrão. Durante a
+inferência incremental, o código usa as linhas `start:start+n`. K é armazenado depois da
+rotação e não deve ser rotacionado novamente ao consultar o cache. A janela do motor é
+limitada a 128 posições: RoPE não habilita extrapolação automática nessa implementação.
+
 ## 4. Multi-head e GQA
 
 Cada linha do softmax produz uma única média ponderada. Para o token prestar atenção em várias
@@ -151,11 +176,25 @@ $$
 \text{MHA}(X) = \text{Concat}(\text{head}_1, \dots, \text{head}_H)\, W_O
 $$
 
-O custo é o mesmo de uma cabeça grande: $H \cdot (d \cdot d/H) = d^2$. Concatenar e multiplicar
-por $W_O$ é igual a $\sum_h \text{head}_h W_O^h$: cada cabeça escreve a sua parte.
+Somar os parâmetros das projeções Q por cabeça dá $H\cdot(d\cdot d/H)=d^2$.
+Na atenção multi-head convencional, Q, K, V e O somam $4d^2$ parâmetros, sem bias.
+Concatenar e multiplicar por $W_O$ equivale a $\sum_h \text{head}_h W_O^h$:
+cada cabeça escreve sua contribuição. A memória dos pesos de atenção também depende de H.
 
 **GQA:** $Q$ tem $H$ cabeças, $K$ e $V$ têm só $H_{kv}$, e grupos de $H/H_{kv}$ cabeças de $Q$
 dividem o mesmo $K$ e $V$. O KV cache encolhe pelo fator $H/H_{kv}$.
+
+Com $H=4$ e $H_{kv}=2$, a correspondência é `[0, 0, 1, 1]`: as cabeças Q 0/1 usam
+K/V 0, e Q 2/3 usam K/V 1. `repeat_kv` expande `(B,2,m,32)` para `(B,4,m,32)` com
+`np.repeat`; essa expansão temporária é materializada, mas o cache conserva apenas as
+duas cabeças K/V. O backward soma as contribuições das consultas que compartilharam K/V.
+
+`GlassLM.generate` primeiro processa todo o prompt; nos passos seguintes, processa o token
+novo e consulta as chaves anteriores. Cada camada tem seu próprio `KVCache`. Quando uma
+inserção ultrapassaria 128 posições, o motor reconstrói o cache a partir dos últimos 128
+tokens, reiniciando as posições em zero. Não descarta apenas a chave mais antiga: os estados
+anteriores dependiam de um histórico que saiu da janela. Esse cache é para inferência;
+a concatenação de arrays não preserva o grafo de gradientes do histórico.
 
 ## 5. Conexão residual
 
@@ -165,13 +204,14 @@ $$
 \frac{\partial x_{l+1}}{\partial x_l} = I + \frac{\partial F}{\partial x_l}
 $$
 
-e o produto de $L$ termos $(I + J_l)$ sempre contém a identidade: existe um caminho direto da
-perda até a primeira camada, e o gradiente não some. Cada camada lê do "fluxo residual" e soma
-o seu resultado de volta.
+Na expansão do produto de Jacobianos $(I+J_l)$ existe um termo de identidade, que oferece
+uma contribuição direta ao gradiente. Isso ajuda a otimização, mas não garante que o
+gradiente nunca desapareça ou exploda: termos podem se cancelar, como em $F(x)=-x$,
+ou amplificar-se no produto. Cada camada lê do "fluxo residual" e soma seu resultado de volta.
 
 ## 6. Normalização
 
-Somando saídas no fluxo residual, a escala dos vetores cresce e varia.
+Ao somar saídas no fluxo residual, a escala dos vetores pode variar.
 
 $$
 \text{LN}(x) = \gamma \odot \frac{x - \mu}{\sqrt{\sigma^2 + \varepsilon}} + \beta
@@ -179,15 +219,31 @@ $$
 \text{RMSNorm}(x) = \gamma \odot \frac{x}{\sqrt{\frac{1}{d}\sum_i x_i^2 + \varepsilon}}
 $$
 
-A RMSNorm tira a centralização e é mais barata, com qualidade parecida. A propriedade que
-importa: $\text{RMSNorm}(c\,x) = \text{RMSNorm}(x)$ para $c > 0$.
+A RMSNorm remove a centralização e o parâmetro beta da expressão de LayerNorm.
+No código, cada RMSNorm aprende um vetor gamma e usa $\varepsilon=10^{-6}$.
+Para $c>0$:
+
+$$
+\text{RMSNorm}(c\,x)
+=\gamma\odot\frac{x}{\sqrt{\frac{1}{d}\sum_i x_i^2+\varepsilon/c^2}}.
+$$
+
+A invariância de escala é exata na expressão ideal com $\varepsilon=0$ para vetores não
+nulos; com epsilon positivo, é aproximada quando a média dos quadrados domina epsilon.
+Por exemplo, normalizar `[3,4]` e `[6,8]`, com gamma 1 e epsilon $10^{-6}$, produz diferenças
+de aproximadamente `[2,55 × 10⁻⁸, 3,39 × 10⁻⁸]`. RMSNorm não impõe média zero, nem variância
+um, e um gamma não uniforme também altera a escala por coordenada.
 
 **Pre-norm.** O original fazia $\text{Norm}(x + F(x))$, o que põe a norma no caminho direto da
 seção 5. O pre-norm deixa o caminho limpo:
 
 $$
-H = X + \text{MHA}(\text{Norm}(X)), \qquad X' = H + \text{FFN}(\text{Norm}(H))
+H = X + \text{Attention}(\text{RMSNorm}_1(X)), \qquad
+X' = H + \text{SwiGLU}(\text{RMSNorm}_2(H))
 $$
+
+No projeto, Attention usa GQA. Há duas RMSNorms por bloco e uma RMSNorm final antes dos
+logits. As duas somas residuais de cada bloco preservam shape `(B,n,128)`.
 
 ## 7. Feed-forward (FFN)
 
@@ -195,34 +251,48 @@ A atenção mistura informação entre tokens. O FFN processa cada token sozinho
 linearidade:
 
 $$
-\text{FFN}(x) = W_2\, \varphi(W_1 x), \qquad W_1: d \to 4d
+\text{FFN}(x) = \varphi(x W_1) W_2, \qquad W_1: d \to 4d
 $$
 
-Leitura útil: cada linha de $W_1$ detecta um padrão, e cada coluna de $W_2$ é o que se escreve
-quando ele aparece (uma memória de chave e valor).
+Uma leitura útil, sem garantir uma interpretação individual dos neurônios: cada coluna de
+$W_1$ detecta uma combinação da entrada e cada linha de $W_2$ contribui para a saída.
 
 **SwiGLU:**
 
 $$
-\text{FFN}(x) = W_2\big(\text{SiLU}(W_1 x) \odot W_3 x\big), \qquad \text{SiLU}(z) = z\,\sigma(z)
+\text{FFN}(x) = \big(\text{SiLU}(x W_1) \odot x W_3\big) W_2,
+\qquad \text{SiLU}(z) = z\,\sigma(z)
 $$
 
 Um caminho decide quanto passa, o outro leva o que passa. Com três matrizes, para manter
 $8d^2$ parâmetros: $3 \cdot d \cdot h = 8d^2 \Rightarrow h = 8d/3$.
 
+O código arredonda com `hidden = int(8*d/3)`: para $d=128$, $h=341$.
+W1 e W3 têm shape `(128,341)`, W2 tem `(341,128)`, sem bias. Isso resulta em
+130.944 parâmetros por FFN, ligeiramente abaixo de $8d^2$ pelo arredondamento.
+O portão SiLU pode ser negativo e não é uma probabilidade limitada a `[0,1]`.
+O snapshot `ffn.act` contém `SiLU(gate) * up`, não apenas SiLU.
+
 ## 8. Saída e temperatura
 
 $$
-z = W_{\text{out}}\, h, \qquad P(\text{próximo} = i) = \frac{e^{z_i / T}}{\sum_j e^{z_j / T}}
+z = h W_{\text{out}}, \qquad P(\text{próximo} = i) = \frac{e^{z_i / T}}{\sum_j e^{z_j / T}}
 $$
 
-Com pesos amarrados, $W_{\text{out}} = E$. A temperatura age na razão entre probabilidades:
+Com a convenção de vetores linha, os pesos amarrados são $W_{\text{out}}=E^\top$:
+o código calcula `logits = h @ E.T`, sem matriz de saída treinável independente e sem bias.
+A saída do forward tem shape `(B,n,1024)`; a geração usa somente sua última posição.
+A temperatura age na razão entre probabilidades:
 
 $$
 \frac{p_i}{p_j} = e^{(z_i - z_j)/T}
 $$
 
-$T \to 0$ vira argmax; $T \to \infty$ vira uniforme.
+Para logits finitos, $T\to0^+$ concentra massa nos máximos, dividindo-a em caso de empate,
+e $T\to\infty$ tende à distribuição uniforme. `next_token_probs` e `generate` exigem
+temperatura positiva. A escolha determinística usa `greedy=True`, que aplica argmax;
+o modo padrão sorteia com `rng.choice`, opcionalmente com semente fixa.
+`generate` não interrompe automaticamente ao escolher EOS: o limite é `n_new`.
 
 ## 9. Perda e o gradiente $p - y$
 
@@ -232,23 +302,45 @@ $$
 \mathcal{L} = -\frac{1}{n} \sum_t \log P(x_{t+1} \mid x_1, \dots, x_t)
 $$
 
-que é a entropia cruzada entre o one-hot $y$ e a previsão $p$. Com $c$ sendo o token certo:
+que é a entropia cruzada entre o one-hot $y$ e a previsão $p$. Para a perda individual
+$\ell$ de uma posição com alvo $c$:
 
 $$
-\mathcal{L} = -z_c + \log \sum_j e^{z_j}
+\ell = -z_c + \log \sum_j e^{z_j}
 \qquad\Rightarrow\qquad
-\frac{\partial \mathcal{L}}{\partial z_i} = -\delta_{ic} + \frac{e^{z_i}}{\sum_j e^{z_j}} = p_i - y_i
+\frac{\partial \ell}{\partial z_i} = -\delta_{ic} + \frac{e^{z_i}}{\sum_j e^{z_j}} = p_i - y_i
 $$
 
-O logit certo sobe com força $1 - p_c$; cada errado desce com força $p_i$.
-Teste de sanidade: um modelo recém iniciado chuta uniforme, então a perda inicial é cerca de
-$\ln V$.
+Para a média sobre $N=B\cdot n$ posições, usada em `GlassLM.loss`, o gradiente é
+$(p-y)/N$. Em uma atualização por descida de gradiente, o logit correto tende a subir e os
+concorrentes a descer. `loss(ids, targets)` não desloca os alvos: `get_batch` fornece targets
+uma posição à direita da entrada. A perda considera todas as posições, sem ignorar PAD.
 
-## 10. Contas que caem em entrevista
+Teste de sanidade: uma distribuição exatamente uniforme tem perda $\ln V$;
+para $V=1024$, cerca de 6,931472 nats. Uma inicialização aleatória não é necessariamente
+uniforme. `loss.grad` registra o gradiente analítico em relação aos logits, mas não executa
+`Tensor.backward()` nem uma atualização dos parâmetros. `generate` usa `no_grad()`.
 
-- **Parâmetros por bloco:** $4d^2$ (atenção) $+ 8d^2$ (FFN) $= 12d^2$. Modelo:
-  $\approx 12 L d^2 + V d$.
-- **Custo da atenção:** $O(n^2 d)$, quadrático no contexto.
-- **FLOPs por token:** $\approx 2P$ na inferência e $\approx 6P$ no treino ($P$ = parâmetros).
-- **KV cache:** $2 \cdot L \cdot n \cdot H_{kv} \cdot d_k \cdot \text{bytes}$. No Llama 2 7B
-  ($L = 32$, $H_{kv} = 32$, $d_k = 128$, fp16) são 0,5 MB por token, ou 2 GB para 4096 tokens.
+## 10. Contas para a arquitetura do projeto
+
+- **Atenção GQA:** com $r=H_{kv}/H$, Q e O somam $2d^2$; K e V somam $2rd^2$.
+  Portanto são $2d^2(1+r)=49.152$ parâmetros por bloco na configuração padrão.
+- **FFN e normalizações:** a FFN tem $3dh=130.944$ parâmetros e as duas RMSNorms
+  têm $2d=256$. Total por bloco: 180.352 parâmetros.
+- **Modelo completo, com embedding compartilhado:**
+  $P=Vd+L[2d^2(1+r)+3dh+2d]+d=852.608$.
+  O último $d$ conta gamma da RMSNorm final; a saída não acrescenta outra matriz $Vd$.
+- **Produtos de atenção:** para n consultas e m chaves, $O(nmd)$.
+  Sem cache, $m=n$, e o custo é quadrático no contexto; na etapa incremental usual,
+  $n=1$ e os produtos percorrem as m chaves. Isso exclui o custo das projeções.
+- **FLOPs por token:** regras como $\approx2P$ na inferência e $\approx6P$ no treino
+  são aproximações para operações densas dominantes, não medições deste motor.
+  O tamanho do contexto, o lookup do embedding, os snapshots e os detalhes dos kernels
+  impedem tratá-las como contagens exatas ou estimativas diretas de tempo.
+- **K/V armazenados:**
+  $2\cdot B\cdot L\cdot m\cdot H_{kv}\cdot d_k\cdot\text{bytes por elemento}$.
+  Com batch 1 e 128 posições, são 65.536 elementos: 256 KiB em float32 ou 512 KiB em
+  float64. Confira o dtype dos arrays e some `k.nbytes + v.nbytes` em todas as camadas:
+  operações do autograd podem promover ativações a float64 mesmo com parâmetros float32.
+  Essa conta exclui arrays temporários e snapshots; GQA reduz pela metade o cache
+  comparado a quatro cabeças K/V do mesmo tamanho.

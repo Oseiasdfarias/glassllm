@@ -1,0 +1,45 @@
+---
+import '../styles/site.css';
+import '@fontsource-variable/source-sans-3';
+import '@fontsource-variable/source-code-pro';
+import Icon from '../components/Icon.astro';
+import type { Copy, Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  copy: Copy;
+  title?: string;
+  description?: string;
+  path?: string;
+  noindex?: boolean;
+}
+
+const { lang, copy, title = copy.meta.title, description = copy.meta.description, path = "", noindex = false } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <title>{title}</title>
+    <link rel="alternate" hreflang="pt" href={base + "pt/" + path} />
+    <link rel="alternate" hreflang="en" href={base + "en/" + path} />
+    <link rel="alternate" hreflang="x-default" href={base + "pt/" + path} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{lang === 'pt' ? 'Pular para o conteúdo' : 'Skip to content'}</a>
+    <slot />
+    <footer class="site-footer">
+      <span>{copy.footer.statement}</span>
+      <span>{copy.footer.phase}</span>
+      <a href="https://github.com/Oseiasdfarias/glassllm" target="_blank" rel="noreferrer">{copy.footer.source}<Icon name="external-link" /></a>
+    </footer>
+  </body>
+</html>

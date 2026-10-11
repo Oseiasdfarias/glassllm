@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/banner-dark.svg">
-  <img alt="glassllm: see every step of an LLM" src="docs/assets/banner-light.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Oseiasdfarias/glassllm/develop/docs/assets/banner-dark.svg">
+  <img alt="glassllm: see every step of an LLM" src="https://raw.githubusercontent.com/Oseiasdfarias/glassllm/develop/docs/assets/banner-light.svg" width="100%">
 </picture>
 
 **A small Transformer written from scratch in NumPy, built to be looked at.**<br>
@@ -22,8 +22,9 @@ and the real numbers it produced for your sentence.
 ---
 
 > [!NOTE]
-> **glassllm is under construction.** This README describes the project being built.
-> Items marked as *planned* do not exist yet. Follow the [roadmap](#roadmap) to see what has landed.
+> **Phases 1 and 2 are implemented and validated locally.** The bilingual Astro site runs the library
+> and pretrained models in a Pyodide worker. The PyPI release workflow is configured; its Trusted
+> Publisher still needs one-time setup on PyPI. GitHub Pages deployment and the chapter path remain pending.
 
 ## Why
 
@@ -38,24 +39,68 @@ number along the way.
 
 | | |
 |---|---|
-| **A Python library** (`pip install glassllm`, *planned*) | A complete decoder-only Transformer in NumPy: BPE tokenizer, a tiny autograd engine, RoPE, grouped-query attention, SwiGLU, RMSNorm and a KV cache. Pretrained Portuguese and English models ship inside the package. |
+| **A Python library** (source in this repository) | NumPy tokenizer, autograd engine, decoder-only Transformer, tracing, training code, CLI and trained Portuguese and English models. The tagged PyPI release is pending. |
 | **A trace mode** | Pass a `Tracer` to the model and every tagged step is recorded with its layer, head, shape and value. |
-| **A command line tool** | Tokenize, generate and print any step of the computation from the terminal. |
-| **An interactive site** (*planned*) | Eleven chapters that walk through the model, plus a free mode that generates text token by token in a loop. Runs the same library in your browser with Pyodide. Nothing to install. |
+| **A command line tool** | Tokenize text, inspect model steps, generate text and trace model values with the included PT/EN assets. |
+| **An interactive site** | A PT/EN lab with real generation, attention, probabilities and the complete Transformer architecture. Zoom into the diagram, replay all 77 calculations per prediction and inspect equations, matrices and code. It runs in a Pyodide worker; the chapter path is planned for Phase 3. |
+
+## Quickstart
+
+From the repository checkout, install the development environment and run either language model:
+
+```bash
+uv sync
+uv run glassllm --lang en generate "Alice was beginning to" --n 40
+uv run glassllm --lang pt generate "Capitu olhou para" --n 40
+uv run glassllm steps
+```
+
+## Run the site
+
+With Node.js 22.12+ and `uv` installed:
+
+```bash
+cd site
+npm ci
+npm run dev
+```
+
+The first run builds the Python wheel for the browser lab. The lab downloads the pinned Pyodide
+runtime and the wheel when you start generation.
+
+In the lab, open **Explore the network**. The map shows all four blocks with Q/K/V, RoPE,
+GQA, K/V cache, causal masking, residuals and SwiGLU. Generate a token and click an operation
+to inspect its actual tensor and source line; the head selector lets you compare attention
+heads. **Replay flow** and **Next calculation** follow the order recorded by the model.
+Zoom, block navigation and full screen help you explore the diagram.
+
+Enable **Slow motion** to follow one operation at a time, with its explanation, equation
+and values. Reading time ranges from 1 to 8 seconds per calculation (3 seconds by default).
+**Pause flow**, **Continue**, **Previous calculation** and **Next calculation** let you study
+at your own pace. The diagram follows the current step; uncheck **Follow current step** to
+pan freely. Resuming generation finishes the current prediction's flow before generating
+another token. This mode slows the visualization of actual recorded calculations.
+
+The **Documentation** link opens 35 complete pages per language, with inference and training
+flowcharts, interface guides, foundations, API reference, examples and BibTeX bibliography.
+There are 34 actual screenshots of components and runtime states. To regenerate screenshots, keep
+the server running and execute `npm run capture:docs` in `site/`, with Node.js 24 and Chrome.
+Set `GLASSLLM_CAPTURE_URL` if the server uses a different port; the default is 4322.
 
 ## Preview
 
-Design mockups. The numbers are illustrative; the real site computes them with the model.
+The chapter and free-mode images below are design mockups. The live site currently includes the
+bilingual overview and the free generation lab; the chapter experience is planned for Phase 3.
 
 **Chapter screen.** Theory, real code and values side by side. The highlighted term in the
 equation, the highlighted line of code and the matrix all refer to the same step.
 
-<img alt="Chapter screen: equation, code and attention weights side by side" src="docs/assets/preview-chapter.png" width="100%">
+<img alt="Chapter screen: equation, code and attention weights side by side" src="https://raw.githubusercontent.com/Oseiasdfarias/glassllm/develop/docs/assets/preview-chapter.png" width="100%">
 
 **Free mode.** Type a prompt, press play, and watch each token travel through the model,
 get a probability and join the text.
 
-<img alt="Free mode: token by token generation loop" src="docs/assets/preview-loop.png" width="100%">
+<img alt="Free mode: token by token generation loop" src="https://raw.githubusercontent.com/Oseiasdfarias/glassllm/develop/docs/assets/preview-loop.png" width="100%">
 
 ## How it works
 
@@ -89,7 +134,7 @@ flowchart TB
 ### Trace mode
 
 Each step is marked in the source with a comment, and the tracer records the value when the
-model runs. *Planned API:*
+model runs. Example:
 
 ```python
 from glassllm import load_pretrained, Tracer
@@ -132,8 +177,9 @@ The full derivations, in Portuguese, are already in [docs/equacoes.md](docs/equa
 
 - [x] Design spec ([docs/specs](docs/specs/2026-10-10-glassllm-design.md))
 - [x] Equations and derivations ([docs/equacoes.md](docs/equacoes.md))
-- [ ] **Phase 1: library.** Tokenizer, autograd, model, tracer, training, CLI, pretrained PT and EN models, tests against PyTorch
-- [ ] **Phase 2: site and free mode.** Astro, Pyodide worker, generation loop, deploy to GitHub Pages
+- [x] **Phase 1: library.** PT/EN corpora and models are built; tests pass on Python 3.10 and 3.13; the wheel was installed and smoke-tested outside the checkout. The PyPI release workflow is configured; publication awaits PyPI Trusted Publisher setup and a tagged release.
+- [x] **Phase 2: site and free mode.** Astro, PT/EN pages, Pyodide worker, generation loop and local build
+- [ ] **Phase 2 deployment.** Publish the site to GitHub Pages from `main`
 - [ ] **Phase 3: chapters.** Chapters 0 to 10 in English and Portuguese
 
 ## Design principles
@@ -144,17 +190,17 @@ The full derivations, in Portuguese, are already in [docs/equacoes.md](docs/equa
   and backward.
 - **Small on purpose.** About 0.9M parameters, so it runs in a browser tab. The goal is to
   understand, not to write good prose.
-- **One source of truth.** The site runs the same wheel that is published on PyPI.
+- **One source of truth.** The site runs the wheel built from the same Python library.
 - **Two languages.** Interface and chapters in English and Portuguese.
 
 ## Repository layout
 
 ```
 glassllm/
-├── src/glassllm/      the library (planned)
-├── tests/             tests, including PyTorch parity (planned)
-├── scripts/           corpus, tokenizer and model training (planned)
-├── site/              Astro site (planned)
+├── src/glassllm/      library implementation
+├── tests/             tests, including PyTorch parity
+├── scripts/           corpus, tokenizer and model training
+├── site/              bilingual Astro site and Pyodide free lab
 └── docs/
     ├── equacoes.md    equations and derivations (PT)
     ├── specs/         design documents
