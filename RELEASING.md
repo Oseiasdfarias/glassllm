@@ -5,10 +5,9 @@ Publishing. No PyPI API token is stored in GitHub.
 
 ## PyPI publisher
 
-The pending GitHub Trusted Publisher is configured on PyPI with the values
-below. On its first successful upload, PyPI creates `glassllm` and converts the
-pending publisher into a project publisher. A pending publisher does not reserve
-the package name until it is used.
+The GitHub Trusted Publisher below is configured on the PyPI `glassllm` project.
+The first upload created the project from its pending publisher; future releases
+use this project publisher.
 
 | Field | Value |
 | --- | --- |
@@ -28,8 +27,8 @@ needed for OIDC; no long-lived PyPI API token is stored in GitHub.
 3. Create and push a tag that matches the package version, for example:
 
    ```sh
-   git tag glassllm-v0.1.0
-   git push origin glassllm-v0.1.0
+   git tag glassllm-v0.1.1
+   git push origin glassllm-v0.1.1
    ```
 
 4. The publish workflow reruns the Python test suite, checks the tag against
