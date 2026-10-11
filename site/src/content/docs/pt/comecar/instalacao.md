@@ -29,7 +29,7 @@ Para um ambiente dedicado apenas à execução da biblioteca, você também pode
 python -m pip install -e .
 ```
 
-A dependência de execução é NumPy. A publicação da biblioteca no PyPI está pendente; os exemplos desta documentação usam o código ou o wheel construído no checkout.
+A dependência de execução é NumPy. Para instalar o pacote publicado em vez do checkout, rode `python -m pip install glassllm`. Os modelos treinados e tokenizers estão incluídos na distribuição.
 
 ## Abrir o laboratório
 

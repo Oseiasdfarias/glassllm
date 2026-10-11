@@ -74,7 +74,7 @@ main(["steps"])
 | `step_index.json` | ID → arquivo/linha das operações; `load_step_index` |
 | `.whl` local | Pacote Python com módulos e assets preparados; usado também pelo navegador |
 
-Modelos não guardam corpus, tokenizer ou otimizador no NPZ. Um nome de wheel precisa seguir o formato completo de wheel, como `glassllm-0.1.0-py3-none-any.whl`; uma URL terminada apenas em `glassllm` não serve ao micropip. A publicação PyPI está adiada e não é pré-requisito do site local.
+Modelos não guardam corpus, tokenizer ou otimizador no NPZ. Um nome de wheel precisa seguir o formato completo de wheel, como `glassllm-0.1.0-py3-none-any.whl`; uma URL terminada apenas em `glassllm` não serve ao micropip. O pacote publicado pode ser instalado com `python -m pip install glassllm`; o laboratório no navegador continua servindo seu próprio wheel ao Pyodide.
 
 ## Scripts do checkout
 

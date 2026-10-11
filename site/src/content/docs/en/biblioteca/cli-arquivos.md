@@ -74,7 +74,7 @@ main(["steps"])
 | `step_index.json` | ID → source file/line; `load_step_index` |
 | Local `.whl` | Python package with modules and prepared assets; also used by the browser |
 
-NPZ files do not include corpus, tokenizer or optimizer. A wheel filename must follow the full wheel convention, such as `glassllm-0.1.0-py3-none-any.whl`; a URL ending only in `glassllm` cannot be installed by micropip. PyPI publication remains deferred and is not required for the local site.
+NPZ files do not include corpus, tokenizer or optimizer. A wheel filename must follow the full wheel convention, such as `glassllm-0.1.0-py3-none-any.whl`; a URL ending only in `glassllm` cannot be installed by micropip. The released package is available with `python -m pip install glassllm`; the browser lab continues to serve its own wheel to Pyodide.
 
 ## Checkout scripts
 

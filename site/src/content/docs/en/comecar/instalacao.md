@@ -29,7 +29,7 @@ For an environment dedicated to running the library, you can also install the ch
 python -m pip install -e .
 ```
 
-The runtime dependency is NumPy. Publication of the library to PyPI is pending; the examples in this documentation use the source or wheel built from the checkout.
+The runtime dependency is NumPy. To install the published package instead of the checkout, run `python -m pip install glassllm`. The pretrained models and tokenizers are included in the distribution.
 
 ## Open the lab
 

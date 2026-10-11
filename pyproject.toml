@@ -2,7 +2,7 @@
 name = "glassllm"
 version = "0.1.0"
 description = "A small Transformer written from scratch in NumPy, built to be looked at."
-readme = "README.md"
+readme = { file = "README.md", content-type = "text/markdown" }
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{ name = "Oséias Dias de Farias" }]
@@ -13,12 +13,15 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Education",
     "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 
 [project.urls]
-Homepage = "https://github.com/Oseiasdfarias/glassllm"
+Homepage = "https://oseiasdfarias.github.io/glassllm/"
+Documentation = "https://oseiasdfarias.github.io/glassllm/en/docs/"
+Source = "https://github.com/Oseiasdfarias/glassllm"
 Issues = "https://github.com/Oseiasdfarias/glassllm/issues"
 
 [project.scripts]

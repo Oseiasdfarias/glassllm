@@ -1,8 +1,8 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Oseiasdfarias/glassllm/develop/docs/assets/banner-dark.svg">
-  <img alt="glassllm: veja cada passo de um LLM" src="https://raw.githubusercontent.com/Oseiasdfarias/glassllm/develop/docs/assets/banner-light.svg" width="100%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/Oseiasdfarias/glassllm/main/docs/assets/banner-dark.svg">
+  <img alt="glassllm: veja cada passo de um LLM" src="https://raw.githubusercontent.com/Oseiasdfarias/glassllm/main/docs/assets/banner-light.svg" width="100%">
 </picture>
 
 **Um Transformer pequeno, escrito do zero em NumPy, feito para ser olhado por dentro.**<br>
@@ -22,10 +22,9 @@ e os números de verdade que ela produziu para a sua frase.
 ---
 
 > [!NOTE]
-> **As Fases 1 e 2 estão implementadas e validadas localmente.** O site bilíngue em Astro executa a
-> biblioteca e os modelos treinados num worker Pyodide. O fluxo de publicação no PyPI está configurado;
-> falta cadastrar o Trusted Publisher no PyPI. A publicação no GitHub Pages e a trilha de capítulos
-> continuam pendentes.
+> **A versão 0.1.0 está publicada no PyPI.** O site bilíngue executa a biblioteca e os modelos
+> treinados num worker Pyodide e está disponível no GitHub Pages. A experiência guiada por capítulos
+> continua planejada para uma fase futura.
 
 ## Por quê
 
@@ -40,20 +39,19 @@ equação. Dá para seguir um token do texto até a previsão e conferir cada n�
 
 | | |
 |---|---|
-| **Uma lib Python** (código-fonte neste repositório) | Tokenizer NumPy, motor de autograd, Transformer decoder, rastreamento, treino, CLI e modelos treinados em português e inglês. A primeira publicação por tag no PyPI está pendente. |
+| **Uma lib Python** (código-fonte neste repositório) | Tokenizer NumPy, motor de autograd, Transformer decoder, rastreamento, treino, CLI e modelos treinados em português e inglês. Instale com `pip install glassllm`. |
 | **Um modo de depuração** | Passe um `Tracer` para o modelo e cada passo marcado é gravado com camada, cabeça, formato e valor. |
 | **Uma ferramenta de terminal** | Tokenizar texto, consultar os passos do modelo, gerar texto e inspecionar valores com os assets PT/EN incluídos. |
 | **Um site interativo** | Laboratório PT/EN com geração real, atenção, probabilidades e a arquitetura completa do Transformer. O desenho permite ampliar, reproduzir os 77 cálculos de cada previsão e inspecionar equações, matrizes e código. Roda num worker Pyodide; os capítulos ficam para a Fase 3. |
 
 ## Começo rápido
 
-No checkout do repositório, instale o ambiente de desenvolvimento e rode um dos modelos:
+Instale o pacote publicado e rode um dos modelos incluídos:
 
 ```bash
-uv sync
-uv run glassllm --lang pt generate "Capitu olhou para" --n 40
-uv run glassllm --lang en generate "Alice was beginning to" --n 40
-uv run glassllm steps
+python -m pip install glassllm
+glassllm --lang pt generate "Capitu olhou para" --n 40
+glassllm --lang en generate "Alice was beginning to" --n 40
 ```
 
 ## Rodar o site
@@ -173,15 +171,14 @@ weights = softmax(scores, axis=-1)  # @step attn.softmax
 | 9 | Logits, perda e treino | Entropia cruzada, o gradiente `p − y`, um treino curto ao vivo |
 | 10 | Geração em loop e KV cache | Sorteio, temperatura e cache |
 
-As deduções completas já estão em [docs/equacoes.md](docs/equacoes.md).
+As deduções completas estão em [docs/equacoes.md](https://github.com/Oseiasdfarias/glassllm/blob/main/docs/equacoes.md).
 
 ## Roteiro
 
 - [x] Spec de design ([docs/specs](docs/specs/2026-10-10-glassllm-design.md))
-- [x] Equações e deduções ([docs/equacoes.md](docs/equacoes.md))
-- [x] **Fase 1: lib.** Corpora e modelos PT/EN foram gerados; testes passam no Python 3.10 e 3.13; o wheel foi instalado e testado fora do checkout. O fluxo do PyPI está configurado; falta cadastrar o Trusted Publisher e criar uma tag de release.
-- [x] **Fase 2: site e modo livre.** Astro, páginas PT/EN, worker Pyodide, geração em loop e build local
-- [ ] **Deploy da Fase 2.** Publicar no GitHub Pages a partir da `main`
+- [x] Equações e deduções ([docs/equacoes.md](https://github.com/Oseiasdfarias/glassllm/blob/main/docs/equacoes.md))
+- [x] **Fase 1: lib.** Modelos PT/EN, testes, wheel e publicação no PyPI.
+- [x] **Fase 2: site e modo livre.** Site Astro bilíngue, worker Pyodide, geração em loop e deploy no GitHub Pages.
 - [ ] **Fase 3: capítulos.** Do 0 ao 10, em português e inglês
 
 ## Princípios

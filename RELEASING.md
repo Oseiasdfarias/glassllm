@@ -3,12 +3,12 @@
 The package is published to PyPI from GitHub Actions using PyPI Trusted
 Publishing. No PyPI API token is stored in GitHub.
 
-## One-time PyPI setup
+## PyPI publisher
 
-On PyPI, open the `glassllm` project and configure a GitHub Trusted Publisher
-with these values. For an uncreated project, add a [pending publisher from your
-PyPI account's publishing settings](https://docs.pypi.org/trusted-publishers/creating-a-project-through-oidc/).
-For an existing project, use its [Publishing settings](https://docs.pypi.org/trusted-publishers/adding-a-publisher/).
+The pending GitHub Trusted Publisher is configured on PyPI with the values
+below. On its first successful upload, PyPI creates `glassllm` and converts the
+pending publisher into a project publisher. A pending publisher does not reserve
+the package name until it is used.
 
 | Field | Value |
 | --- | --- |
@@ -17,17 +17,9 @@ For an existing project, use its [Publishing settings](https://docs.pypi.org/tru
 | Workflow name | `publish.yml` |
 | Environment name | `pypi` |
 
-If the project has not been created yet, configure a pending publisher for
-`glassllm` from PyPI's publishing settings. The first successful tagged
-workflow run creates the project and publishes its distributions. If PyPI
-reports that the name is already in use, choose an available distribution
-name before making a release. A pending publisher does not reserve the name
-until it is used.
-
-In GitHub, create an environment named `pypi` under **Settings → Environments**.
-Add required reviewers if releases should wait for maintainer approval. The
-workflow grants the PyPI job only the `id-token: write` permission it needs for
-OIDC publishing.
+The `pypi` environment is referenced by the workflow and by the PyPI publisher.
+The workflow grants its publishing job only the `id-token: write` permission
+needed for OIDC; no long-lived PyPI API token is stored in GitHub.
 
 ## Publish a version
 
