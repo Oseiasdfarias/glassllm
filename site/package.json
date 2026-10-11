@@ -5,10 +5,12 @@
   "type": "module",
   "scripts": {
     "prepare:wheel": "node scripts/prepare-wheel.mjs",
+    "prepare:inventory": "python3 ../scripts/build_api_inventory.py",
+    "prepare:site": "npm run prepare:inventory && npm run prepare:wheel",
     "clean": "node scripts/clean.mjs",
-    "dev": "npm run prepare:wheel && astro dev",
-    "check": "npm run prepare:wheel && astro check",
-    "build": "npm run clean && npm run prepare:wheel && astro build",
+    "dev": "npm run prepare:site && astro dev",
+    "check": "npm run prepare:site && astro check",
+    "build": "npm run clean && npm run prepare:site && astro build",
     "preview": "astro preview",
     "capture:docs": "node scripts/capture-docs.mjs",
     "check:docs": "node scripts/check-docs.mjs"
